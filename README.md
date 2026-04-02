@@ -93,6 +93,7 @@ The following mods are supported but are not required:
 ## Notes
 - `SpeedMine`, `Surround`, and `AutoCrystal` already exist in Meteor, so Astral does not ship duplicate copies of them.
 - `AstralGlow` presence sharing is disabled by default. If enabled, it only sends your UUID and current username to the configured share endpoint.
+- The repo-root `glow_list.json` is intended to be the public read-only registry file for `AstralGlow`'s default `list-url`.
 - `OreSim` uses a direct seed setting for multiplayer servers. On singleplayer, it uses the real world seed automatically.
 
 ## Building From Source

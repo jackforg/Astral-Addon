@@ -65,7 +65,7 @@ public class ForgGlow extends Module {
     public final Setting<String> remoteUrl = sgRegistry.add(new StringSetting.Builder()
         .name("list-url")
         .description("Public JSON URL Astral reads for shared glow users. Host a visible file here if you want users to inspect the registry themselves.")
-        .defaultValue("")
+        .defaultValue("https://raw.githubusercontent.com/jackforg/Astral-Addon/main/glow_list.json")
         .build()
     );
 
