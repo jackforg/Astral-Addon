@@ -1,0 +1,110 @@
+package dev.forg;
+
+import com.mojang.logging.LogUtils;
+import dev.forg.commands.BannerBlacklist;
+import dev.forg.commands.ForgVersionCommand;
+import dev.forg.commands.GlowCommand;
+import dev.forg.modules.*;
+import dev.forg.modules.searcharea.SearchArea;
+import meteordevelopment.meteorclient.addons.GithubRepo;
+import meteordevelopment.meteorclient.addons.MeteorAddon;
+import meteordevelopment.meteorclient.commands.Commands;
+import meteordevelopment.meteorclient.systems.modules.Category;
+import meteordevelopment.meteorclient.systems.modules.Modules;
+import net.minecraft.item.Items;
+import org.slf4j.Logger;
+
+public class forg extends MeteorAddon {
+    public static final String VERSION = "2.1.2";
+
+    public static final Logger LOG = LogUtils.getLogger();
+    public static final Category COMBAT = new Category("Astral Combat", Items.NETHERITE_SWORD.getDefaultStack());
+    public static final Category MOVEMENT = new Category("Astral Movement", Items.ELYTRA.getDefaultStack());
+    public static final Category MINING = new Category("Astral Mining", Items.NETHERITE_PICKAXE.getDefaultStack());
+    public static final Category AUTOMATION = new Category("Astral Automation", Items.OBSERVER.getDefaultStack());
+    public static final Category STASH = new Category("Astral Stash", Items.ENDER_CHEST.getDefaultStack());
+    public static final Category UTILITY = new Category("Astral Utility", Items.NETHER_STAR.getDefaultStack());
+
+    @Override
+    public void onRegisterCategories() {
+        Modules.registerCategory(COMBAT);
+        Modules.registerCategory(MOVEMENT);
+        Modules.registerCategory(MINING);
+        Modules.registerCategory(AUTOMATION);
+        Modules.registerCategory(STASH);
+        Modules.registerCategory(UTILITY);
+    }
+
+    @Override
+    public void onInitialize() {
+        LOG.info("Initializing Astral {} for Minecraft 1.21.11", VERSION);
+
+        // Original Astral modules.
+        Modules.get().add(new ForgGlow());
+        Modules.get().add(new automoss());
+        Modules.get().add(new B36());
+        Modules.get().add(new BannerFinder());
+        Modules.get().add(new DeathExplore());
+        Modules.get().add(new DropTest());
+        Modules.get().add(new LawnMower());
+        Modules.get().add(new MinecartDetector());
+        Modules.get().add(new AutoIceBoat());
+        Modules.get().add(new RocketSpeed());
+        Modules.get().add(new TabGuiScale());
+
+        // From stardust.
+        Modules.get().add(new AdBlocker());
+        Modules.get().add(new AutoDyeShulkers());
+        Modules.get().add(new BookTools());
+        Modules.get().add(new StashBrander());
+
+        // From trouser-streak.
+        Modules.get().add(new AdvancedItemESP());
+        Modules.get().add(new MobGearESP());
+        Modules.get().add(new PortalPatternFinder());
+
+        // From jeff-mod.
+        Modules.get().add(new AutoLogPlus());
+        Modules.get().add(new ElytraFlyPlusPlus());
+        Modules.get().add(new TrailFollower());
+        Modules.get().add(new BetterStashFinder());
+        Modules.get().add(new AutoPortal());
+        Modules.get().add(new Pitch40Util());
+        Modules.get().add(new TrailMaker());
+        Modules.get().add(new DiscordNotifs());
+        Modules.get().add(new AutoEXPPlus());
+        Modules.get().add(new AFKVanillaFly());
+        Modules.get().add(new GrimAirPlace());
+        Modules.get().add(new SearchArea());
+
+        // From numbyhack.
+        Modules.get().add(new Beyblade());
+
+        // From meteor-rejects.
+        Modules.get().add(new AutoCraft());
+        Modules.get().add(new AutoFarm());
+        Modules.get().add(new AutoMine());
+        Modules.get().add(new BlockIn());
+        Modules.get().add(new CoordLogger());
+        Modules.get().add(new Lavacast());
+        Modules.get().add(new OreSim());
+        Modules.get().add(new Rendering());
+
+        // Commands.
+        Commands.add(new BannerBlacklist());
+        Commands.add(new ForgVersionCommand());
+        Commands.add(new GlowCommand());
+
+        LOG.info("Astral {} initialized - {} modules loaded.", VERSION, Modules.get().getAll().size());
+    }
+
+    @Override
+    public String getPackage() {
+        return "dev.forg";
+    }
+
+    @Override
+    public GithubRepo getRepo() {
+        return new GithubRepo("jackforg", "forgs-decluttered-addon");
+    }
+}

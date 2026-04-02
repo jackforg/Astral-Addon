@@ -1,0 +1,84 @@
+plugins {
+    alias(libs.plugins.fabric.loom)
+    id 'com.gradleup.shadow' version '8.3.5'
+}
+
+def minecraftVersion = libs.versions.minecraft.get()
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+base {
+    archivesName = project.archives_base_name
+}
+
+version = project.mod_version
+group = project.maven_group
+
+repositories {
+    mavenCentral()
+    maven { url "https://maven.meteordev.org/releases" }
+    maven { url "https://maven.meteordev.org/snapshots" }
+    maven { name = "Modrinth"; url = "https://api.modrinth.com/maven" }
+    maven { url 'https://jitpack.io' }
+    maven { url "https://maven.lenni0451.net/releases" }
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/forg.accesswidener")
+}
+
+dependencies {
+    minecraft libs.minecraft
+    mappings variantOf(libs.yarn) { classifier("v2") }
+    modImplementation libs.fabric.loader
+    modImplementation libs.meteor.client
+
+    // Optional compile-only dependencies for supported integrations.
+    modCompileOnly "meteordevelopment:baritone:${project.baritone_version}"
+    modCompileOnly "maven.modrinth:xaeros-minimap:${project.xaeros_minimap_version}"
+    modCompileOnly "maven.modrinth:xaeros-world-map:${project.xaeros_worldmap_version}"
+    modCompileOnly "maven.modrinth:xaeroplus:${project.xaeroplus_version}"
+
+    // Bundled via Fabric JiJ so available at runtime without separate mods.
+    include implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    include implementation("net.lenni0451:LambdaEvents:2.4.2")
+}
+
+processResources {
+    inputs.properties(["version": project.version, "mc_version": minecraftVersion])
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version, "mc_version": minecraftVersion
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    it.options.release = 21
+}
+
+jar {
+    if (file("LICENSE").exists()) {
+        from("LICENSE") { rename { "${it}_${project.base.archivesName}" } }
+    }
+}
+
+// Safety: fail the build if networking classes are imported outside approved files.
+tasks.register("forbidNetwork") {
+    doLast {
+        def forbidden = ["java.net.http.", "javax.net.", "okhttp", "retrofit"]
+        def approved = ["DiscordNotifs.java", "JeffUtils.java", "ForgGlow.java"]
+        def srcDir = file("src/main/java")
+        def bad = []
+        srcDir.eachFileRecurse { f ->
+            if (f.name.endsWith(".java") && !approved.contains(f.name)) {
+                def t = f.getText("UTF-8")
+                forbidden.each { pat -> if (t.contains(pat)) bad << "${f.name} contains ${pat}" }
+            }
+        }
+        if (!bad.isEmpty()) throw new GradleException("astral safety check - forbidden network usage:\n" + bad.join("\n"))
+    }
+}
+tasks.named("check") { dependsOn("forbidNetwork") }

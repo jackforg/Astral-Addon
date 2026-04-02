@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "astral",
+  "version": "${version}",
+  "name": "Astral",
+  "description": "Astral is a curated Meteor Client addon fork for anarchy survival.",
+  "authors": [
+    "Astral"
+  ],
+  "contact": {
+    "repo": "https://github.com/jackforg/forgs-decluttered-addon"
+  },
+  "icon": "assets/forg/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "meteor": [
+      "dev.forg.forg"
+    ]
+  },
+  "accessWidener": "forg.accesswidener",
+  "mixins": [
+    "forg.mixins.json"
+  ],
+  "custom": {
+    "meteor-client:color": "225,25,25"
+  },
+  "depends": {
+    "java": ">=21",
+    "minecraft": [
+      "${mc_version}"
+    ],
+    "meteor-client": "*"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "dev.forg.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "accessor.AnvilScreenAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "ForgGlowMixin",
+    "KeyBindingMixin",
+    "LivingEntityMixin",
+    "EntityMixin",
+    "accessor.AnvilScreenHandlerAccessor",
+    "accessor.CountPlacementModifierAccessor",
+    "accessor.HeightRangePlacementModifierAccessor",
+    "accessor.RarityFilterPlacementModifierAccessor"
+  ]
+}

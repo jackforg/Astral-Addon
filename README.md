@@ -1,0 +1,119 @@
+# Astral
+
+A [Meteor Client](https://meteorclient.com) addon for Minecraft 1.21.11, consolidating useful modules from several open-source addons into one tidy package under a single **Astral** category.
+
+Maintained as the **Astral** fork of the original addon.
+
+## Categories
+
+Astral now splits modules across multiple Meteor lists instead of one giant category:
+- `Astral Combat`
+- `Astral Movement`
+- `Astral Mining`
+- `Astral Automation`
+- `Astral Stash`
+- `Astral Utility`
+
+## Modules
+
+### Stash Hunting
+| Module | Description |
+|---|---|
+| BetterStashFinder | Enhanced stash finder with Xaero waypoint integration, weighted stash scoring, multi-chunk site clustering, selective cross-module trail correlation, configurable alert thresholds, illegal-bedrock detection, revisit priority, age guesses, ender and utility kit-station detection, and dungeon/mineshaft/human-touch anomaly heuristics |
+| SearchArea | Defines a search area bounding box for stash hunting routes |
+| PortalPatternFinder | Scans cave air for the shapes of removed nether portals |
+| BannerFinder | Finds and highlights banners with tracers, alerts, and persistent seen-banner memory |
+
+### Movement & Flight
+| Module | Description |
+|---|---|
+| ElytraFlyPlusPlus | Enhanced elytra flight with configurable speed and pitch control |
+| AFKVanillaFly | Keeps you airborne while AFK using vanilla flight |
+| Pitch40Util | Assists with pitch-40 elytra boost technique |
+| AutoPortal | Automatically builds, lights, and can auto-enter nether portals |
+| AutoIceBoat | Boat automation for ice highways with steering-aware auto-track |
+| RocketSpeed | Automatically uses fireworks when speed drops below the configured threshold |
+
+### Automation
+| Module | Description |
+|---|---|
+| AutoFarm | All-in-one farming utility: tills, harvests, plants, and bonemeal crops |
+| AutoMine | Automatically targets burrow or surround blocks around nearby enemies and can hand them off to Meteor's PacketMine |
+| AutoCraft | Automatically crafts items using the recipe book |
+| AutoEXPPlus | Automatically manages XP bottle throwing |
+| AutoLogPlus | Highly configurable auto-disconnect for travel, crystals, pearls, maces, players, totems, rockets, and laggy conditions |
+| AutoDyeShulkers | Automatically dyes shulker boxes |
+| Lavacast | Automates the lavacast process with a 5-stage state machine |
+| BlockIn | Cages you inside blocks to avoid taking damage |
+| LawnMower | Automatically breaks grass, flowers, and saplings around you |
+| AutoMoss | Automatically uses bone meal on specific blocks |
+| DamBuster | Automatically places and lights TNT around you |
+| OreSim | Predicts ore veins from a known world seed and renders them in-world |
+
+### ESP & Rendering
+| Module | Description |
+|---|---|
+| AdvancedItemESP | ESP for items with advanced filtering options |
+| MobGearESP | Shows the gear worn by nearby mobs |
+| AstralGlow | Applies a colourful glow outline to tracked players, with optional opt-in UUID + username sharing for public registries |
+| Rendering | Various render tweaks: post-process shaders, structure void, dinnerbone mode, deadmau5 ears, christmas chests |
+
+### Utility
+| Module | Description |
+|---|---|
+| CoordLogger | Logs teleports and global world events with journaling, dedupe, and dimension tagging |
+| TrailFollower | Follows a recorded movement trail and can persist trail state for resume-after-disconnect workflows |
+| TrailMaker | Records a movement trail for TrailFollower and can save, load, and reverse named routes |
+| BookTools | Utilities for reading and copying books |
+| StashBrander | Brands stash signs with configurable text |
+| AdBlocker | Blocks chat advertisement spam |
+| DiscordNotifs | Sends configurable Discord webhook notifications with server and dimension context plus module-event support |
+| GrimAirPlace | Places blocks in the air for Grim-based servers |
+| Beyblade | Let it rip |
+| DeathExplore | Allows you to continue exploring after death |
+| DropTest | Tracks entity drops over time and outputs statistics to `.minecraft/meteor-client/astral/` |
+| MinecartDetector | Detects problematic minecarts, highlights suspicious clusters, and logs them to `.minecraft/meteor-client/astral/` |
+| TabGuiScale | Changes GUI scale when opening the tab/player list |
+
+## Requirements
+- Minecraft **1.21.11** (Fabric)
+- [Meteor Client](https://meteorclient.com) dev build for **1.21.11**
+- [Fabric Loader](https://fabricmc.net) 0.16.x or later
+
+## Optional Dependencies
+The following mods are supported but are not required:
+- [Xaero's Minimap](https://modrinth.com/mod/xaeros-minimap) for BetterStashFinder waypoint creation
+- [Xaero's World Map](https://modrinth.com/mod/xaeros-world-map)
+
+## Installation
+1. Install Meteor Client for 1.21.11.
+2. Drop `astral-2.1.2.jar` into your `.minecraft/mods` folder.
+3. Launch the game. Modules appear under the Astral category set listed above.
+
+## Notes
+- `SpeedMine`, `Surround`, and `AutoCrystal` already exist in Meteor, so Astral does not ship duplicate copies of them.
+- `AstralGlow` presence sharing is disabled by default. If enabled, it only sends your UUID and current username to the configured share endpoint.
+- `OreSim` uses a direct seed setting for multiplayer servers. On singleplayer, it uses the real world seed automatically.
+
+## Building From Source
+```bash
+./gradlew build
+# output: build/libs/astral-2.1.2.jar
+```
+
+## Credits
+
+This addon consolidates work from several open-source projects. Full credit goes to the original authors and upstream addon maintainers.
+
+Special project credit:
+- **Forg** - original author and maintainer of the upstream addon
+- **Astral** - renamed fork and curated continuation
+
+| Source | Author(s) | Modules |
+|---|---|---|
+| [stardust](https://github.com/0xTas/stardust) | 0xTas | AdBlocker, AutoDyeShulkers, BookTools, StashBrander |
+| [Trouser-Streak](https://github.com/etianl/Trouser-Streak) | etianl, windoid | AdvancedItemESP, MobGearESP, PortalPatternFinder |
+| [jeff mod](https://github.com/miles352/meteor-stashhunting-addon) | miles352, xqyet, WarriorLost, other credited contributors | AFKVanillaFly, AutoLogPlus, AutoPortal, BetterStashFinder, DiscordNotifs, ElytraFlyPlusPlus, GrimAirPlace, Pitch40Util, SearchArea, TrailFollower, TrailMaker |
+| [meteor-rejects](https://github.com/AntiqueWhite/meteor-rejects) | Meteor Development / AntiqueWhite | AutoCraft, AutoFarm, AutoEXPPlus, BlockIn, CoordLogger, Lavacast, Rendering |
+| [Numby-hack](https://github.com/cqb13/Numby-hack) | cqb13 | Beyblade |
+| [forgs-decluttered-addon](https://github.com/jackforg/forgs-decluttered-addon) | Forg | AutoIceBoat, BannerFinder, DamBuster, DeathExplore, DropTest, ForgGlow, LawnMower, MinecartDetector, AutoMoss, RocketSpeed, TabGuiScale |
