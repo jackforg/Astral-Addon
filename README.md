@@ -89,7 +89,8 @@ The following mods are supported but are not required:
 ## Notes
 - `SpeedMine`, `Surround`, and `AutoCrystal` already exist in Meteor, so Astral does not ship duplicate copies of them.
 - `AstralGlow` sharing is off by default. If enabled, it sends only your UUID and current username to the configured endpoint.
-- The repo-root `glow_list.json` is the default public list used by `AstralGlow`.
+- `AstralGlow` now defaults to the live Astral registry at `http://138.68.235.32:8787`.
+- The repo-root `glow_list.json` is still kept as a public mirror/backup list for `AstralGlow`.
 - If you want opt-in users to appear there automatically, deploy the companion service in `tools/glow-registry/` and point `share-url` at its `/share` endpoint.
 - A ready-to-use `render.yaml` is included for a free Render deployment of that service.
 - The companion service can serve `/glow_list.json` directly or mirror updates back into this repo.

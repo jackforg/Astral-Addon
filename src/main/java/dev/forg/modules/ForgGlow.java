@@ -42,6 +42,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ForgGlow extends Module {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final int FETCH_INTERVAL_TICKS = 24000; // ~20 minutes
+    private static final String DEFAULT_PUBLIC_LIST_URL = "http://138.68.235.32:8787/glow_list.json";
+    private static final String DEFAULT_SHARE_URL = "http://138.68.235.32:8787/share";
 
     private final Path glowFile = ForgPaths.dataDir().resolve("glow_list.json");
 
@@ -66,7 +68,7 @@ public class ForgGlow extends Module {
     public final Setting<String> remoteUrl = sgRegistry.add(new StringSetting.Builder()
         .name("list-url")
         .description("JSON URL Astral reads for shared glow users.")
-        .defaultValue("https://raw.githubusercontent.com/jackforg/Astral-Addon/main/glow_list.json")
+        .defaultValue(DEFAULT_PUBLIC_LIST_URL)
         .build()
     );
 
@@ -80,7 +82,7 @@ public class ForgGlow extends Module {
     public final Setting<String> shareUrl = sgSharing.add(new StringSetting.Builder()
         .name("share-url")
         .description("POST endpoint used for opt-in glow sharing. Astral sends only your UUID and current username.")
-        .defaultValue("")
+        .defaultValue(DEFAULT_SHARE_URL)
         .visible(sharePresence::get)
         .build()
     );
