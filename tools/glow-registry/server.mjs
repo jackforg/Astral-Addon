@@ -71,9 +71,20 @@ function normalizeUser(entry, fallbackSource = "imported") {
 }
 
 function mergeUser(existing, incoming) {
-    if (incoming.username && !existing.username) existing.username = incoming.username;
-    if (incoming.source && !existing.source) existing.source = incoming.source;
-    if (incoming.optedInAt && !existing.optedInAt) existing.optedInAt = incoming.optedInAt;
+    if (incoming.username) existing.username = incoming.username;
+
+    if (incoming.source) {
+        if (!existing.source || existing.source === "manual" || existing.source === "imported" || incoming.source === "share-presence") {
+            existing.source = incoming.source;
+        }
+    }
+
+    if (incoming.optedInAt) {
+        if (!existing.optedInAt || incoming.optedInAt < existing.optedInAt) {
+            existing.optedInAt = incoming.optedInAt;
+        }
+    }
+
     if (incoming.lastSeenAt) {
         if (!existing.lastSeenAt || incoming.lastSeenAt > existing.lastSeenAt) {
             existing.lastSeenAt = incoming.lastSeenAt;
@@ -234,31 +245,68 @@ async function mirrorToGitHub(registry) {
         "User-Agent": "astral-glow-registry"
     };
 
-    let sha;
-    const current = await fetch(contentUrl, { headers });
-    if (current.ok) {
-        const currentJson = await current.json();
-        sha = currentJson.sha;
-    } else if (current.status !== 404) {
+    async function fetchGitHubState() {
+        const current = await fetch(contentUrl, { headers });
+        if (current.ok) {
+            const currentJson = await current.json();
+            const encoded = typeof currentJson.content === "string" ? currentJson.content.replace(/\n/g, "") : "";
+            const decoded = encoded ? Buffer.from(encoded, "base64").toString("utf8") : "";
+
+            return {
+                sha: currentJson.sha,
+                registry: decoded.trim() ? normalizeRegistry(JSON.parse(decoded)) : defaultRegistry()
+            };
+        }
+
+        if (current.status === 404) {
+            return { sha: null, registry: defaultRegistry() };
+        }
+
         throw new Error(`GitHub contents lookup failed with HTTP ${current.status}.`);
     }
 
-    const body = {
-        message: `Update Astral glow registry (${registry.users.length} users)`,
-        content: Buffer.from(JSON.stringify(registry, null, 2), "utf8").toString("base64"),
-        branch: githubBranch
-    };
+    function mergeRegistries(remoteRegistry, localRegistry) {
+        return {
+            notice: localRegistry.notice || remoteRegistry.notice || defaultNoticeText,
+            users: normalizeUsers([...(remoteRegistry.users ?? []), ...(localRegistry.users ?? [])]),
+            updatedAt: nowIso()
+        };
+    }
 
-    if (sha) body.sha = sha;
+    async function writeRegistry(targetRegistry, sha) {
+        const body = {
+            message: `Update Astral glow registry (${targetRegistry.users.length} users)`,
+            content: Buffer.from(JSON.stringify(targetRegistry, null, 2), "utf8").toString("base64"),
+            branch: githubBranch
+        };
 
-    const update = await fetch(`https://api.github.com/repos/${githubRepo}/contents/${githubPath}`, {
-        method: "PUT",
-        headers: {
-            ...headers,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body)
-    });
+        if (sha) body.sha = sha;
+
+        return fetch(`https://api.github.com/repos/${githubRepo}/contents/${githubPath}`, {
+            method: "PUT",
+            headers: {
+                ...headers,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
+    }
+
+    const current = await fetchGitHubState();
+    let update = await writeRegistry(registry, current.sha);
+
+    if (update.status === 409) {
+        const latest = await fetchGitHubState();
+        const mergedRegistry = mergeRegistries(latest.registry, registry);
+        update = await writeRegistry(mergedRegistry, latest.sha);
+
+        if (update.ok) {
+            return {
+                githubMirrored: true,
+                message: `GitHub mirror updated at ${githubRepo}/${githubPath} after resolving a stale SHA.`
+            };
+        }
+    }
 
     if (!update.ok) {
         const text = await update.text();
