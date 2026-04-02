@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: astral-glow-registry
+    runtime: node
+    plan: free
+    rootDir: tools/glow-registry
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 20.19.0
+      - key: ASTRAL_GLOW_DATA_FILE
+        value: /tmp/astral-glow-registry-data.json
+      - key: ASTRAL_GLOW_PUBLIC_LIST_URL
+        value: https://raw.githubusercontent.com/jackforg/Astral-Addon/main/glow_list.json
+      - key: ASTRAL_GLOW_BOOTSTRAP_URL
+        value: https://raw.githubusercontent.com/jackforg/Astral-Addon/main/glow_list.json
+      - key: ASTRAL_GLOW_GITHUB_REPO
+        value: jackforg/Astral-Addon
+      - key: ASTRAL_GLOW_GITHUB_BRANCH
+        value: main
+      - key: ASTRAL_GLOW_GITHUB_PATH
+        value: glow_list.json
+      - key: ASTRAL_GLOW_GITHUB_TOKEN
+        sync: false

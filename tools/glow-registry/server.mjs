@@ -7,10 +7,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const port = Number.parseInt(process.env.PORT ?? "8787", 10);
 const dataFile = process.env.ASTRAL_GLOW_DATA_FILE ?? join(__dirname, "glow-registry-data.json");
 const publicListUrl = process.env.ASTRAL_GLOW_PUBLIC_LIST_URL ?? "";
+const bootstrapUrl = process.env.ASTRAL_GLOW_BOOTSTRAP_URL ?? "";
 const githubRepo = process.env.ASTRAL_GLOW_GITHUB_REPO ?? "";
 const githubBranch = process.env.ASTRAL_GLOW_GITHUB_BRANCH ?? "main";
 const githubPath = process.env.ASTRAL_GLOW_GITHUB_PATH ?? "glow_list.json";
 const githubToken = process.env.ASTRAL_GLOW_GITHUB_TOKEN ?? "";
+const defaultNoticeText = "AstralGlow public list. Entries are opt-in and used only for client-side glow cosmetics.";
 
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
@@ -35,23 +37,134 @@ function nowIso() {
 
 function defaultRegistry() {
     return {
-        notice: "AstralGlow public list. Entries are opt-in and used only for client-side glow cosmetics.",
+        notice: defaultNoticeText,
         users: [],
         updatedAt: nowIso()
     };
 }
 
+function normalizeOptionalString(value) {
+    return typeof value === "string" && value.trim().length > 0 ? value : null;
+}
+
+function normalizeUser(entry, fallbackSource = "imported") {
+    if (validateUuid(entry)) {
+        return {
+            uuid: entry,
+            username: null,
+            source: fallbackSource,
+            optedInAt: null,
+            lastSeenAt: null
+        };
+    }
+
+    if (!entry || typeof entry !== "object") return null;
+    if (!validateUuid(entry.uuid)) return null;
+
+    return {
+        uuid: entry.uuid,
+        username: validateUsername(entry.username) ? entry.username : null,
+        source: normalizeOptionalString(entry.source) ?? fallbackSource,
+        optedInAt: normalizeOptionalString(entry.optedInAt),
+        lastSeenAt: normalizeOptionalString(entry.lastSeenAt)
+    };
+}
+
+function mergeUser(existing, incoming) {
+    if (incoming.username && !existing.username) existing.username = incoming.username;
+    if (incoming.source && !existing.source) existing.source = incoming.source;
+    if (incoming.optedInAt && !existing.optedInAt) existing.optedInAt = incoming.optedInAt;
+    if (incoming.lastSeenAt) {
+        if (!existing.lastSeenAt || incoming.lastSeenAt > existing.lastSeenAt) {
+            existing.lastSeenAt = incoming.lastSeenAt;
+        }
+    }
+}
+
+function sortUsers(users) {
+    users.sort((a, b) => {
+        const usernameCompare = (a.username ?? "").localeCompare(b.username ?? "", undefined, {
+            sensitivity: "base"
+        });
+
+        if (usernameCompare !== 0) return usernameCompare;
+        return a.uuid.localeCompare(b.uuid, undefined, { sensitivity: "base" });
+    });
+}
+
+function normalizeUsers(entries) {
+    const usersByUuid = new Map();
+
+    for (const entry of entries) {
+        const normalized = normalizeUser(entry);
+        if (!normalized) continue;
+
+        const existing = usersByUuid.get(normalized.uuid);
+        if (existing) mergeUser(existing, normalized);
+        else usersByUuid.set(normalized.uuid, normalized);
+    }
+
+    const users = Array.from(usersByUuid.values());
+    sortUsers(users);
+    return users;
+}
+
+function normalizeRegistry(parsed) {
+    if (Array.isArray(parsed)) {
+        return {
+            notice: defaultNoticeText,
+            users: normalizeUsers(parsed),
+            updatedAt: nowIso()
+        };
+    }
+
+    if (!parsed || typeof parsed !== "object") return defaultRegistry();
+
+    return {
+        notice: typeof parsed.notice === "string" && parsed.notice.trim().length > 0 ? parsed.notice : defaultNoticeText,
+        users: normalizeUsers(Array.isArray(parsed.users) ? parsed.users : []),
+        updatedAt: typeof parsed.updatedAt === "string" && parsed.updatedAt.trim().length > 0 ? parsed.updatedAt : nowIso()
+    };
+}
+
+async function fetchRegistry(url) {
+    if (!url) return defaultRegistry();
+
+    const response = await fetch(url, {
+        headers: {
+            "Accept": "application/json",
+            "User-Agent": "astral-glow-registry"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Registry bootstrap failed with HTTP ${response.status}.`);
+    }
+
+    const text = await response.text();
+    if (!text.trim()) return defaultRegistry();
+    return normalizeRegistry(JSON.parse(text));
+}
+
+async function bootstrapRegistry() {
+    if (!bootstrapUrl) return defaultRegistry();
+
+    try {
+        const registry = await fetchRegistry(bootstrapUrl);
+        await saveRegistry(registry);
+        return registry;
+    } catch (error) {
+        console.warn(`Astral glow registry bootstrap failed: ${error instanceof Error ? error.message : String(error)}`);
+        return defaultRegistry();
+    }
+}
+
 async function loadRegistry() {
     try {
         const raw = await readFile(dataFile, "utf8");
-        const parsed = JSON.parse(raw);
-        if (!parsed || typeof parsed !== "object") return defaultRegistry();
-        if (!Array.isArray(parsed.users)) parsed.users = [];
-        if (typeof parsed.notice !== "string") parsed.notice = defaultRegistry().notice;
-        if (typeof parsed.updatedAt !== "string") parsed.updatedAt = nowIso();
-        return parsed;
+        return normalizeRegistry(JSON.parse(raw));
     } catch (error) {
-        if (error && error.code === "ENOENT") return defaultRegistry();
+        if (error && (error.code === "ENOENT" || error instanceof SyntaxError)) return bootstrapRegistry();
         throw error;
     }
 }
@@ -90,6 +203,7 @@ function upsertUser(registry, payload) {
 
     if (existing) {
         existing.username = payload.username;
+        if (!existing.optedInAt) existing.optedInAt = timestamp;
         existing.lastSeenAt = timestamp;
         existing.source = "share-presence";
         return { added: false, user: existing };
@@ -104,7 +218,7 @@ function upsertUser(registry, payload) {
     };
 
     registry.users.push(user);
-    registry.users.sort((a, b) => a.username.localeCompare(b.username, undefined, { sensitivity: "base" }));
+    sortUsers(registry.users);
     return { added: true, user };
 }
 
@@ -224,6 +338,7 @@ const server = createServer(async (request, response) => {
                 ok: true,
                 service: "astral-glow-registry",
                 publicListUrl,
+                bootstrapUrl,
                 githubMirrorConfigured: Boolean(githubRepo && githubToken)
             });
             response.writeHead(result.status, result.headers);

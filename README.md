@@ -91,6 +91,7 @@ The following mods are supported but are not required:
 - `AstralGlow` sharing is off by default. If enabled, it sends only your UUID and current username to the configured endpoint.
 - The repo-root `glow_list.json` is the default public list used by `AstralGlow`.
 - If you want opt-in users to appear there automatically, deploy the companion service in `tools/glow-registry/` and point `share-url` at its `/share` endpoint.
+- A ready-to-use `render.yaml` is included for a free Render deployment of that service.
 - The companion service can serve `/glow_list.json` directly or mirror updates back into this repo.
 - `OreSim` uses a direct seed setting for multiplayer servers. On singleplayer, it uses the real world seed automatically.
 
