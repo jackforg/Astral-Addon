@@ -15,7 +15,7 @@ import net.minecraft.item.Items;
 import org.slf4j.Logger;
 
 public class forg extends MeteorAddon {
-    public static final String VERSION = "2.1.2";
+    public static final String VERSION = "3.0.0";
 
     public static final Logger LOG = LogUtils.getLogger();
     public static final Category WORLD = new Category("Astral World", Items.ENDER_CHEST.getDefaultStack());
@@ -79,8 +79,11 @@ public class forg extends MeteorAddon {
         Modules.get().add(new BlockIn());
         Modules.get().add(new CoordLogger());
         Modules.get().add(new Lavacast());
+        Modules.get().add(new LootLocator());
         Modules.get().add(new OreSim());
         Modules.get().add(new Rendering());
+        Modules.get().add(new SeedMinimap());
+        Modules.get().add(new SlimeChunks());
 
         // Commands.
         Commands.add(new BannerBlacklist());

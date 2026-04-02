@@ -1,6 +1,9 @@
 package dev.forg.util;
 
 public final class OptionalModSupport {
+    public static final boolean BARITONE_AVAILABLE = isClassAvailable("baritone.api.BaritoneAPI")
+        && isClassAvailable("baritone.api.pathing.goals.GoalXZ");
+
     public static final boolean XAERO_WAYPOINTS_AVAILABLE = isClassAvailable("xaero.common.minimap.waypoints.Waypoint")
         && isClassAvailable("xaero.hud.minimap.BuiltInHudModules")
         && isClassAvailable("xaero.map.mods.SupportMods");

@@ -155,6 +155,12 @@ public class OreSim extends Module {
     }
 
     private void reload() {
+        if (mc.world == null) {
+            error("Join a world before using OreSim.");
+            toggle();
+            return;
+        }
+
         Long resolvedSeed = resolveSeed();
         if (resolvedSeed == null) {
             error("Set a valid world seed before using OreSim.");
