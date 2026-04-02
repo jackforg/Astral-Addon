@@ -41,7 +41,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ForgGlow extends Module {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final int FETCH_INTERVAL_TICKS = 24000; // ~20 minutes
     private static final String DEFAULT_PUBLIC_LIST_URL = "http://138.68.235.32:8787/glow_list.json";
     private static final String DEFAULT_SHARE_URL = "http://138.68.235.32:8787/share";
 
@@ -97,9 +96,7 @@ public class ForgGlow extends Module {
     private final Map<UUID, String> glowList = new LinkedHashMap<>();
     private final Set<UUID> remoteList = ConcurrentHashMap.newKeySet();
 
-    private int fetchTimer = 0;
     private String lastWorldKey = "";
-    private long lastPresenceShareAt = 0;
     private boolean presenceDisclosureShown = false;
     private boolean missingShareUrlWarned = false;
     private volatile String lastFetchStatus = "No list fetch yet.";
@@ -112,16 +109,16 @@ public class ForgGlow extends Module {
 
     @Override
     public void onActivate() {
-        fetchTimer = 0;
-        lastWorldKey = "";
-        lastPresenceShareAt = 0;
+        lastWorldKey = currentWorldKey();
         presenceDisclosureShown = false;
         missingShareUrlWarned = false;
         lastFetchStatus = "Waiting for first list fetch.";
         lastShareStatus = "Waiting for first share attempt.";
 
-        fetchRemoteList("module activated");
-        sharePresenceIfNeeded(true);
+        if (!lastWorldKey.isEmpty()) {
+            fetchRemoteList("module activated");
+            sharePresenceIfNeeded();
+        }
     }
 
     @EventHandler
@@ -131,16 +128,10 @@ public class ForgGlow extends Module {
 
         if (worldChanged) {
             lastWorldKey = worldKey;
-            fetchTimer = 0;
-            fetchRemoteList("world changed");
-            sharePresenceIfNeeded(true);
-            return;
-        }
-
-        if (++fetchTimer >= FETCH_INTERVAL_TICKS) {
-            fetchTimer = 0;
-            fetchRemoteList("periodic refresh");
-            sharePresenceIfNeeded(false);
+            if (!worldKey.isEmpty()) {
+                fetchRemoteList("world changed");
+                sharePresenceIfNeeded();
+            }
         }
     }
 
@@ -178,7 +169,7 @@ public class ForgGlow extends Module {
 
     public void refreshSharedRegistryNow() {
         fetchRemoteList("manual refresh");
-        sharePresenceIfNeeded(true);
+        sharePresenceIfNeeded();
     }
 
     private void fetchRemoteList(String reason) {
@@ -265,7 +256,7 @@ public class ForgGlow extends Module {
         }
     }
 
-    private void sharePresenceIfNeeded(boolean force) {
+    private void sharePresenceIfNeeded() {
         if (!sharePresence.get()) return;
         if (mc.getSession() == null || mc.getSession().getUuidOrNull() == null) return;
 
@@ -278,9 +269,6 @@ public class ForgGlow extends Module {
             lastShareStatus = "Sharing is enabled, but share-url is empty.";
             return;
         }
-
-        long now = System.currentTimeMillis();
-        if (!force && now - lastPresenceShareAt < 20L * 60L * 1000L) return;
 
         String username = mc.getSession().getUsername();
         UUID uuid = mc.getSession().getUuidOrNull();
@@ -315,7 +303,6 @@ public class ForgGlow extends Module {
                 }
 
                 String responseSummary = parseShareResponse(conn);
-                lastPresenceShareAt = System.currentTimeMillis();
                 lastShareStatus = "Shared UUID and username at " + Instant.now() + "." + responseSummary;
 
                 if (verboseSharing.get()) {

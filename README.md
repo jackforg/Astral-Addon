@@ -89,13 +89,14 @@ The following mods are supported but are not required:
 
 ## Installation
 1. Install Meteor Client for 1.21.11.
-2. Drop `astral-3.2.3.jar` into your `.minecraft/mods` folder.
+2. Drop `astral-3.2.4.jar` into your `.minecraft/mods` folder.
 3. Launch the game. Modules appear under the Astral category set listed above.
 
 ## Notes
 - `SpeedMine`, `Surround`, and `AutoCrystal` already exist in Meteor, so Astral does not ship duplicate copies of them.
 - `AstralGlow` sharing is off by default. If enabled, it sends only your UUID and current username to the configured endpoint.
 - `AstralGlow` now defaults to the live Astral registry at `http://138.68.235.32:8787`.
+- `AstralGlow` now refreshes on join/world change and on manual `.glow refresh`, instead of polling every 20 minutes.
 - The repo-root `glow_list.json` is still kept as a public mirror/backup list for `AstralGlow`.
 - If you want opt-in users to appear there automatically, deploy the companion service in `tools/glow-registry/` and point `share-url` at its `/share` endpoint.
 - A ready-to-use `render.yaml` is included for a free Render deployment of that service.
@@ -116,7 +117,7 @@ The following mods are supported but are not required:
 ## Building From Source
 ```bash
 ./gradlew build
-# output: build/libs/astral-3.2.3.jar
+# output: build/libs/astral-3.2.4.jar
 ```
 
 ## Credits
