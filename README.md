@@ -1,13 +1,12 @@
 # Astral Addon
 
-A [Meteor Client](https://meteorclient.com) addon for Minecraft 1.21.11 by Forg, consolidating useful modules from several open-source addons into one tidy Astral package.
+A [Meteor Client](https://meteorclient.com) addon for Minecraft 1.21.11 by Forg, consolidating useful modules from several open-source addons into one curated package for Astral Survival.
 
 Maintained as the **Astral Addon** fork of the original addon.
 
 ## Categories
 
-Astral Addon now groups modules into three Meteor lists:
-- `Astral Combat`
+Astral Addon now groups modules into two Meteor lists:
 - `Astral World`
 - `Astral Utility`
 

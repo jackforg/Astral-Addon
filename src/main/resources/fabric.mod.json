@@ -3,7 +3,7 @@
   "id": "astral",
   "version": "${version}",
   "name": "Astral Addon",
-  "description": "Astral Addon by Forg is a curated Meteor Client addon for anarchy survival.",
+  "description": "Astral Addon by Forg is a curated module list for Astral Survival.",
   "authors": [
     "Forg"
   ],

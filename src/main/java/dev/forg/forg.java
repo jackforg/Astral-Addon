@@ -18,11 +18,10 @@ public class forg extends MeteorAddon {
     public static final String VERSION = "2.1.2";
 
     public static final Logger LOG = LogUtils.getLogger();
-    private static final Category COMBAT_CATEGORY = new Category("Astral Combat", Items.NETHERITE_SWORD.getDefaultStack());
     private static final Category WORLD_CATEGORY = new Category("Astral World", Items.ENDER_CHEST.getDefaultStack());
     private static final Category UTILITY_CATEGORY = new Category("Astral Utility", Items.NETHER_STAR.getDefaultStack());
 
-    public static final Category COMBAT = COMBAT_CATEGORY;
+    public static final Category COMBAT = UTILITY_CATEGORY;
     public static final Category MOVEMENT = WORLD_CATEGORY;
     public static final Category MINING = WORLD_CATEGORY;
     public static final Category AUTOMATION = UTILITY_CATEGORY;
@@ -31,7 +30,6 @@ public class forg extends MeteorAddon {
 
     @Override
     public void onRegisterCategories() {
-        Modules.registerCategory(COMBAT_CATEGORY);
         Modules.registerCategory(WORLD_CATEGORY);
         Modules.registerCategory(UTILITY_CATEGORY);
     }
