@@ -149,7 +149,7 @@ public class AutoIceBoat extends Module {
     };
 
     public AutoIceBoat() {
-        super(forg.MOVEMENT, "auto-ice-boat",
+        super(forg.WORLD, "auto-ice-boat",
               "Rotation lock and auto-walk for ice highways, with keybind 90-degree turns and optional track-following.");
     }
 

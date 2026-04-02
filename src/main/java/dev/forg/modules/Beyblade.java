@@ -57,7 +57,7 @@ public class Beyblade extends Module {
     );
 
     public Beyblade() {
-        super(forg.COMBAT, "Beyblade", "Tries to rotate you.");
+        super(forg.UTILITY, "Beyblade", "Tries to rotate you.");
     }
 
     private short count = 0;

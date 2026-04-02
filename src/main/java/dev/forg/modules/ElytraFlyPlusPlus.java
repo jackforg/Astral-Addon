@@ -251,7 +251,7 @@ public class ElytraFlyPlusPlus extends Module {
 
     public ElytraFlyPlusPlus() {
         super(
-            forg.MOVEMENT,
+            forg.WORLD,
             "ElytraFlyPlusPlus",
             "Elytra fly with some more features."
         );

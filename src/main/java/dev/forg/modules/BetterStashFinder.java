@@ -498,7 +498,7 @@ public class BetterStashFinder extends Module
 
     public BetterStashFinder()
     {
-        super(forg.STASH, "better-stash-finder", "Meteors StashFinder but with more features.");
+        super(forg.WORLD, "better-stash-finder", "Meteors StashFinder but with more features.");
     }
 
     private Vec3d lastPosition = null;

@@ -102,7 +102,7 @@ public class LawnMower extends Module {
     private int timer = 0;
 
     public LawnMower() {
-        super(forg.MINING, "LawnMower", "Automatically breaks grass, flowers, and saplings around you.");
+        super(forg.WORLD, "LawnMower", "Automatically breaks grass, flowers, and saplings around you.");
     }
 
     @EventHandler

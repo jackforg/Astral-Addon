@@ -307,7 +307,7 @@ public class TrailFollower extends Module
 
     public TrailFollower()
     {
-        super(forg.STASH, "TrailFollower", "Automatically follows trails in all dimensions.");
+        super(forg.WORLD, "TrailFollower", "Automatically follows trails in all dimensions.");
     }
 
     void resetTrail()

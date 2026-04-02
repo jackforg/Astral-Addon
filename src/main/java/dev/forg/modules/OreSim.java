@@ -89,7 +89,7 @@ public class OreSim extends Module {
     private String lastWorldKey = "";
 
     public OreSim() {
-        super(forg.MINING, "ore-sim", "Predicts ore vein positions from a known seed.");
+        super(forg.WORLD, "ore-sim", "Predicts ore vein positions from a known seed.");
         Ore.oreSettings.forEach(sgOres::add);
     }
 

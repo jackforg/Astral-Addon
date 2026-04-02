@@ -126,7 +126,7 @@ public class CoordLogger extends Module {
     );
 
     public CoordLogger() {
-        super(forg.STASH, "coord-logger", "Logs coordinates of various events. Might not work on Spigot/Paper servers.");
+        super(forg.WORLD, "coord-logger", "Logs coordinates of various events. Might not work on Spigot/Paper servers.");
     }
 
     private final Map<String, LoggedEvent> recentEvents = new HashMap<>();

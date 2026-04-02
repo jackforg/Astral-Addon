@@ -1,12 +1,12 @@
 # Astral Addon
 
-A [Meteor Client](https://meteorclient.com) addon for Minecraft 1.21.11 by Forg, consolidating useful modules from several open-source addons into one curated package for Astral Survival.
+A [Meteor Client](https://meteorclient.com) addon for Minecraft 1.21.11 by Forg, built as a curated module set for Astral Survival.
 
 Maintained as the **Astral Addon** fork of the original addon.
 
 ## Categories
 
-Astral Addon now groups modules into two Meteor lists:
+Astral Addon uses two Meteor lists:
 - `Astral World`
 - `Astral Utility`
 
@@ -88,17 +88,17 @@ The following mods are supported but are not required:
 
 ## Notes
 - `SpeedMine`, `Surround`, and `AutoCrystal` already exist in Meteor, so Astral does not ship duplicate copies of them.
-- `AstralGlow` presence sharing is disabled by default. If enabled, it only sends your UUID and current username to the configured share endpoint.
-- The repo-root `glow_list.json` is intended to be the public read-only registry file for `AstralGlow`'s default `list-url`.
-- If you want opt-in users to automatically appear in the public registry, deploy the companion service in `tools/glow-registry/` and point `share-url` at its `/share` endpoint.
-- The companion registry can either serve `/glow_list.json` directly or mirror updates back into this GitHub repo so users can inspect the public list for themselves.
+- `AstralGlow` sharing is off by default. If enabled, it sends only your UUID and current username to the configured endpoint.
+- The repo-root `glow_list.json` is the default public list used by `AstralGlow`.
+- If you want opt-in users to appear there automatically, deploy the companion service in `tools/glow-registry/` and point `share-url` at its `/share` endpoint.
+- The companion service can serve `/glow_list.json` directly or mirror updates back into this repo.
 - `OreSim` uses a direct seed setting for multiplayer servers. On singleplayer, it uses the real world seed automatically.
 
 ## AstralGlow Registry
-- `list-url` is the public JSON file Astral reads to decide who should glow.
+- `list-url` is the JSON file Astral reads to decide who should glow.
 - `share-url` is an opt-in POST endpoint that accepts only `uuid` and `username`.
-- Astral now includes a reference service under `tools/glow-registry/` that accepts `/share` requests, serves `/glow_list.json`, and can optionally mirror that public list back to GitHub.
-- The public registry format is transparent and human-readable. It includes usernames, UUIDs, and timestamps so users can audit exactly what is stored.
+- `tools/glow-registry/` contains a small reference service that accepts `/share`, serves `/glow_list.json`, and can mirror that list back to GitHub.
+- The public registry format includes usernames, UUIDs, and timestamps so users can inspect what is stored.
 - `.glow status` shows the last fetch/share result, and `.glow refresh` forces an immediate refresh/share attempt for testing.
 
 ## Building From Source

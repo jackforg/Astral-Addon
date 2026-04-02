@@ -79,7 +79,7 @@ public class GrimAirPlace extends Module {
     private int delay = 0;
 
     public GrimAirPlace() {
-        super(forg.MINING, "grim-air-place", "Places a block where your crosshair is pointing at.");
+        super(forg.WORLD, "grim-air-place", "Places a block where your crosshair is pointing at.");
     }
 
     @Override

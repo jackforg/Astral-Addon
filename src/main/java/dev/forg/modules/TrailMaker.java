@@ -66,7 +66,7 @@ public class TrailMaker extends Module
 
     public TrailMaker()
     {
-        super(forg.STASH, "trail-maker", "Allows you to plot xaero chunk highlights on the map and then follow them in order.");
+        super(forg.WORLD, "trail-maker", "Allows you to plot xaero chunk highlights on the map and then follow them in order.");
     }
 
     public RegistryKey<World> dimension;

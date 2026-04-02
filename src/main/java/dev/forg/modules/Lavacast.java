@@ -97,7 +97,7 @@ public class Lavacast extends Module {
     private Stage stage = Stage.None;
 
     public Lavacast() {
-        super(forg.MINING, "lavacast", "Automatically Lavacasts");
+        super(forg.WORLD, "lavacast", "Automatically Lavacasts");
     }
 
     @Override

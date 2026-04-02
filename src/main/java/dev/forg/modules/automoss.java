@@ -88,7 +88,7 @@ public class automoss extends Module {
     private final Map<BlockPos, Integer> recentlyUsedMoss = new HashMap<>();
 
     public automoss() {
-        super(forg.MINING, "AutoMoss", "Automatically uses bone meal on specific blocks.");
+        super(forg.WORLD, "AutoMoss", "Automatically uses bone meal on specific blocks.");
     }
 
     @EventHandler

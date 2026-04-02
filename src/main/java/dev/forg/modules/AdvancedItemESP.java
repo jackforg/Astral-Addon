@@ -80,7 +80,7 @@ public class AdvancedItemESP extends Module {
     ));
 
     public AdvancedItemESP() {
-        super(forg.STASH, "AdvancedItemESP", "ESP Module that highlights only certain items.");
+        super(forg.WORLD, "AdvancedItemESP", "ESP Module that highlights only certain items.");
     }
 
     public final Setting<ShapeMode> shapeMode = sgGeneral.add(new EnumSetting.Builder<ShapeMode>()

@@ -129,7 +129,7 @@ public class AutoMine extends Module {
     private boolean packetMineNoticeShown;
 
     public AutoMine() {
-        super(forg.MINING, "auto-mine", "Automatically mines burrow or surround blocks around nearby enemies.");
+        super(forg.WORLD, "auto-mine", "Automatically mines burrow or surround blocks around nearby enemies.");
     }
 
     @Override

@@ -84,7 +84,7 @@ public class MobGearESP extends Module {
     ));
 
     public MobGearESP() {
-        super(forg.STASH, "MobGearESP", "ESP Module that highlights mobs likely wearing player gear.");
+        super(forg.WORLD, "MobGearESP", "ESP Module that highlights mobs likely wearing player gear.");
     }
 
     public final Setting<ShapeMode> shapeMode = sgGeneral.add(new EnumSetting.Builder<ShapeMode>()

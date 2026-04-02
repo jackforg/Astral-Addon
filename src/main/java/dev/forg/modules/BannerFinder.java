@@ -143,7 +143,7 @@ public class BannerFinder extends Module {
     private int soundCooldownTicks = 0;
 
     public BannerFinder() {
-        super(forg.STASH, "banner-finder", "Finds and highlights banners with tracers and alerts.");
+        super(forg.WORLD, "banner-finder", "Finds and highlights banners with tracers and alerts.");
         initBlacklist();
     }
 

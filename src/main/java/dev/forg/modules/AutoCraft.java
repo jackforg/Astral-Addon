@@ -54,7 +54,7 @@ public class AutoCraft extends Module {
     );
 
     public AutoCraft() {
-        super(forg.AUTOMATION, "auto-craft", "Automatically crafts items.");
+        super(forg.UTILITY, "auto-craft", "Automatically crafts items.");
     }
 
     @EventHandler

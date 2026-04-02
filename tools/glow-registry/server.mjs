@@ -35,7 +35,7 @@ function nowIso() {
 
 function defaultRegistry() {
     return {
-        notice: "Public AstralGlow registry. Entries are opt-in, user-submitted, and used only for client-side glow cosmetics.",
+        notice: "AstralGlow public list. Entries are opt-in and used only for client-side glow cosmetics.",
         users: [],
         updatedAt: nowIso()
     };
@@ -110,7 +110,7 @@ function upsertUser(registry, payload) {
 
 async function mirrorToGitHub(registry) {
     if (!githubRepo || !githubToken) {
-        return { githubMirrored: null, message: "GitHub mirroring is not configured on this registry service." };
+        return { githubMirrored: null, message: "GitHub mirroring is not configured." };
     }
 
     const contentUrl = `https://api.github.com/repos/${githubRepo}/contents/${githubPath}?ref=${encodeURIComponent(githubBranch)}`;
@@ -179,7 +179,7 @@ async function handleShare(request) {
 
     let mirror = {
         githubMirrored: null,
-        message: "GitHub mirroring is not configured on this registry service."
+        message: "GitHub mirroring is not configured."
     };
 
     try {
@@ -198,7 +198,7 @@ async function handleShare(request) {
         publicListUrl,
         githubMirrored: mirror.githubMirrored,
         userCount: registry.users.length,
-        message: `${result.added ? "Presence stored" : "Presence refreshed"} and public registry updated. ${mirror.message}`.trim()
+        message: `${result.added ? "Presence stored." : "Presence refreshed."} ${mirror.message}`.trim()
     });
 }
 

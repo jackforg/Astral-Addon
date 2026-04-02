@@ -408,7 +408,7 @@ private final Setting<Integer> maxRendered = sgRender.add(new IntSetting.Builder
     }
 
     public MinecartDetector() {
-        super(forg.STASH, "minecart-detector", "Detects and highlights problematic minecarts. Logs are saved in .minecraft/meteor-client/astral/ as MinecartDetector.log");
+        super(forg.WORLD, "minecart-detector", "Detects and highlights problematic minecarts. Logs are saved in .minecraft/meteor-client/astral/ as MinecartDetector.log");
     }
 
     @Override

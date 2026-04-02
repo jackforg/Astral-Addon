@@ -34,19 +34,7 @@ public class MsgUtil {
     public static void initModulePrefixes() {
         modulePrefixes.clear();
 
-        for (Module module : Modules.get().getGroup(forg.COMBAT)) {
-            modulePrefixes.put(module.name, StardustUtil.rCC());
-        }
-        for (Module module : Modules.get().getGroup(forg.MOVEMENT)) {
-            modulePrefixes.put(module.name, StardustUtil.rCC());
-        }
-        for (Module module : Modules.get().getGroup(forg.MINING)) {
-            modulePrefixes.put(module.name, StardustUtil.rCC());
-        }
-        for (Module module : Modules.get().getGroup(forg.AUTOMATION)) {
-            modulePrefixes.put(module.name, StardustUtil.rCC());
-        }
-        for (Module module : Modules.get().getGroup(forg.STASH)) {
+        for (Module module : Modules.get().getGroup(forg.WORLD)) {
             modulePrefixes.put(module.name, StardustUtil.rCC());
         }
         for (Module module : Modules.get().getGroup(forg.UTILITY)) {

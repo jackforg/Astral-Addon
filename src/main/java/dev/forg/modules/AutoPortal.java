@@ -100,7 +100,7 @@ public class AutoPortal extends Module {
     private int index = 0;
 
     public AutoPortal() {
-        super(forg.MOVEMENT, "auto-portal", "For the Base Hunter who has places to be.");
+        super(forg.WORLD, "auto-portal", "For the Base Hunter who has places to be.");
     }
 
     @Override

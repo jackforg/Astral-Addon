@@ -65,21 +65,21 @@ public class ForgGlow extends Module {
 
     public final Setting<String> remoteUrl = sgRegistry.add(new StringSetting.Builder()
         .name("list-url")
-        .description("Public JSON URL Astral reads for shared glow users. This can point at a raw GitHub file or a registry service endpoint such as /glow_list.json.")
+        .description("JSON URL Astral reads for shared glow users.")
         .defaultValue("https://raw.githubusercontent.com/jackforg/Astral-Addon/main/glow_list.json")
         .build()
     );
 
     public final Setting<Boolean> sharePresence = sgSharing.add(new BoolSetting.Builder()
         .name("share-presence")
-        .description("Opt in to sharing your UUID and current username with the share URL below so other Astral users can glow you automatically. Off by default.")
+        .description("Share your UUID and current username so other Astral users can glow you automatically. Off by default.")
         .defaultValue(false)
         .build()
     );
 
     public final Setting<String> shareUrl = sgSharing.add(new StringSetting.Builder()
         .name("share-url")
-        .description("HTTP endpoint Astral POSTs your UUID and current username to when share-presence is enabled. Point this at a registry endpoint such as /share. Astral does not send chat, coords, inventory, server IP, or tokens.")
+        .description("POST endpoint used for opt-in glow sharing. Astral sends only your UUID and current username.")
         .defaultValue("")
         .visible(sharePresence::get)
         .build()
@@ -87,7 +87,7 @@ public class ForgGlow extends Module {
 
     public final Setting<Boolean> verboseSharing = sgSharing.add(new BoolSetting.Builder()
         .name("verbose-sharing-messages")
-        .description("Shows chat messages explaining when Astral is reading the public list or sharing your presence.")
+        .description("Show messages for list refreshes and share attempts.")
         .defaultValue(true)
         .build()
     );
@@ -100,11 +100,11 @@ public class ForgGlow extends Module {
     private long lastPresenceShareAt = 0;
     private boolean presenceDisclosureShown = false;
     private boolean missingShareUrlWarned = false;
-    private volatile String lastFetchStatus = "No public list fetch attempted yet.";
-    private volatile String lastShareStatus = "No presence share attempted yet.";
+    private volatile String lastFetchStatus = "No list fetch yet.";
+    private volatile String lastShareStatus = "No share attempt yet.";
 
     public ForgGlow() {
-        super(forg.UTILITY, "astral-glow", "Applies a colourful glow outline to tracked players, with optional opt-in shared presence.");
+        super(forg.UTILITY, "astral-glow", "Highlights tracked players with a colored glow outline.");
         load();
     }
 
@@ -115,8 +115,8 @@ public class ForgGlow extends Module {
         lastPresenceShareAt = 0;
         presenceDisclosureShown = false;
         missingShareUrlWarned = false;
-        lastFetchStatus = "Waiting for first public list fetch.";
-        lastShareStatus = "Waiting for first presence share attempt.";
+        lastFetchStatus = "Waiting for first list fetch.";
+        lastShareStatus = "Waiting for first share attempt.";
 
         fetchRemoteList("module activated");
         sharePresenceIfNeeded(true);
@@ -163,7 +163,7 @@ public class ForgGlow extends Module {
     }
 
     public String getSharedFieldSummary() {
-        return "Astral only sends your UUID and current username when presence sharing is enabled.";
+        return "Astral sends only your UUID and current username when sharing is enabled.";
     }
 
     public String getLastFetchStatus() {
@@ -182,7 +182,7 @@ public class ForgGlow extends Module {
     private void fetchRemoteList(String reason) {
         String url = getRemoteUrl();
         if (url.isEmpty()) {
-            lastFetchStatus = "Public list URL is not set.";
+            lastFetchStatus = "List URL is not set.";
             return;
         }
 
@@ -197,7 +197,7 @@ public class ForgGlow extends Module {
 
                 int code = conn.getResponseCode();
                 if (code < 200 || code >= 300) {
-                    lastFetchStatus = "Public list fetch failed with HTTP " + code + " from " + url + ".";
+                    lastFetchStatus = "List fetch failed with HTTP " + code + ".";
                     forg.LOG.warn("[astral-glow] Failed to fetch remote glow list (HTTP {}).", code);
                     return;
                 }
@@ -208,14 +208,14 @@ public class ForgGlow extends Module {
                     remoteList.addAll(fetched);
 
                     if (verboseSharing.get()) {
-                        sendClientInfo("Astral Glow loaded " + fetched.size() + " shared users from " + url + " (" + reason + ").");
+                        sendClientInfo("Loaded " + fetched.size() + " shared users from " + url + " (" + reason + ").");
                     }
 
-                    lastFetchStatus = "Loaded " + fetched.size() + " shared users from " + url + " at " + Instant.now() + ".";
+                    lastFetchStatus = "Loaded " + fetched.size() + " shared users at " + Instant.now() + ".";
                     forg.LOG.info("[astral-glow] Loaded {} UUIDs from remote list.", remoteList.size());
                 }
             } catch (Exception e) {
-                lastFetchStatus = "Public list fetch failed: " + e.getMessage();
+                lastFetchStatus = "List fetch failed: " + e.getMessage();
                 forg.LOG.warn("[astral-glow] Failed to fetch remote glow list: {}", e.getMessage());
             }
         });
@@ -270,10 +270,10 @@ public class ForgGlow extends Module {
         String url = getShareUrl();
         if (url.isEmpty()) {
             if (!missingShareUrlWarned) {
-                warning("Astral Glow presence sharing is enabled, but share-url is empty. Nothing will be uploaded until you set one.");
+                warning("Presence sharing is enabled, but share-url is empty.");
                 missingShareUrlWarned = true;
             }
-            lastShareStatus = "Presence sharing is enabled, but share-url is empty.";
+            lastShareStatus = "Sharing is enabled, but share-url is empty.";
             return;
         }
 
@@ -285,8 +285,8 @@ public class ForgGlow extends Module {
         PresencePayload payload = new PresencePayload(uuid.toString(), username);
 
         if (!presenceDisclosureShown && verboseSharing.get()) {
-            info("Astral Glow presence sharing is enabled. Astral will send your UUID and current username to " + url + " so other opt-in users can glow you automatically.");
-            info("Astral Glow does not send chat, coordinates, inventory, server IP, tokens, or account credentials.");
+            info("Presence sharing is enabled. Astral will send your UUID and current username to " + url + ".");
+            info("Astral does not send chat, coordinates, inventory, server IP, tokens, or credentials.");
             presenceDisclosureShown = true;
         }
 
@@ -307,21 +307,21 @@ public class ForgGlow extends Module {
 
                 int code = conn.getResponseCode();
                 if (code < 200 || code >= 300) {
-                    lastShareStatus = "Presence share failed with HTTP " + code + " from " + url + ".";
-                    sendClientWarning("Astral Glow could not share your presence. Endpoint returned HTTP " + code + ".");
+                    lastShareStatus = "Share failed with HTTP " + code + ".";
+                    sendClientWarning("Could not share your presence. Endpoint returned HTTP " + code + ".");
                     return;
                 }
 
                 String responseSummary = parseShareResponse(conn);
                 lastPresenceShareAt = System.currentTimeMillis();
-                lastShareStatus = "Shared UUID and username with " + url + " at " + Instant.now() + "." + responseSummary;
+                lastShareStatus = "Shared UUID and username at " + Instant.now() + "." + responseSummary;
 
                 if (verboseSharing.get()) {
-                    sendClientInfo("Astral Glow shared your username and UUID with " + url + "." + responseSummary);
+                    sendClientInfo("Shared your username and UUID with " + url + "." + responseSummary);
                 }
             } catch (Exception e) {
-                lastShareStatus = "Presence share failed: " + e.getMessage();
-                sendClientWarning("Astral Glow failed to share your presence: " + e.getMessage());
+                lastShareStatus = "Share failed: " + e.getMessage();
+                sendClientWarning("Failed to share your presence: " + e.getMessage());
             }
         });
     }
@@ -335,11 +335,11 @@ public class ForgGlow extends Module {
             StringBuilder summary = new StringBuilder();
 
             if (object.has("publicListUrl") && object.get("publicListUrl").isJsonPrimitive()) {
-                summary.append(" Public list: ").append(object.get("publicListUrl").getAsString()).append(".");
+                summary.append(" List: ").append(object.get("publicListUrl").getAsString()).append(".");
             }
 
             if (object.has("githubMirrored") && object.get("githubMirrored").isJsonPrimitive()) {
-                summary.append(" GitHub mirror updated: ").append(object.get("githubMirrored").getAsBoolean()).append(".");
+                summary.append(" GitHub mirrored: ").append(object.get("githubMirrored").getAsBoolean()).append(".");
             }
 
             if (object.has("message") && object.get("message").isJsonPrimitive()) {

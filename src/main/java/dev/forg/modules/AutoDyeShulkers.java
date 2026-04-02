@@ -26,7 +26,7 @@ import net.minecraft.client.gui.screen.ingame.InventoryScreen;
  * @author Tas [0xTas] <root@0xTas.dev>
  **/
 public class AutoDyeShulkers extends Module {
-    public AutoDyeShulkers() { super(forg.AUTOMATION, "AutoDyeShulkers", "Automatically dye shulker boxes and/or bundles in crafting grids."); }
+    public AutoDyeShulkers() { super(forg.UTILITY, "AutoDyeShulkers", "Automatically dye shulker boxes and/or bundles in crafting grids."); }
 
     public enum DyeMode {
         Shulkers, Bundles, Both

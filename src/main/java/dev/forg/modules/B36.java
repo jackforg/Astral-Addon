@@ -99,7 +99,7 @@ public class B36 extends Module {
     private BlockPos lastPos = null;
 
     public B36() {
-        super(forg.MINING, "DamBuster", "Automatically places and lights TNT around you. Precision chaos for when peace talks fail. Named after the Dambusters.");
+        super(forg.WORLD, "DamBuster", "Automatically places and lights TNT around you. Precision chaos for when peace talks fail. Named after the Dambusters.");
     }
 
     @Override

@@ -62,7 +62,7 @@ public class BlockIn extends Module {
     private double sY;
 
     public BlockIn() {
-        super(forg.COMBAT, "block-in", "Block yourself in using any block.");
+        super(forg.UTILITY, "block-in", "Block yourself in using any block.");
     }
 
     @Override

@@ -135,7 +135,7 @@ public class DiscordNotifs extends Module
 
     public DiscordNotifs()
     {
-        super(forg.AUTOMATION, "discord-notifs", "Sends notifications to a discord webhook.");
+        super(forg.UTILITY, "discord-notifs", "Sends notifications to a discord webhook.");
     }
 
     @Override

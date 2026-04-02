@@ -71,7 +71,7 @@ public class RocketSpeed extends Module {
     private double previousSpeed = 0;
 
     public RocketSpeed() {
-        super(forg.MOVEMENT, "rocket-speed", "Automatically uses fireworks when speed drops below threshold.");
+        super(forg.WORLD, "rocket-speed", "Automatically uses fireworks when speed drops below threshold.");
     }
 
     @EventHandler

@@ -16,7 +16,7 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class GlowCommand extends Command {
     public GlowCommand() {
-        super("glow", "Manages the astral-glow tracked player list.", "ag", "fg");
+        super("glow", "Manage Astral Glow's local list and sharing status.", "ag", "fg");
     }
 
     @Override
@@ -73,7 +73,7 @@ public class GlowCommand extends Command {
         builder.then(literal("status")
             .executes(ctx -> {
                 ForgGlow module = Modules.get().get(ForgGlow.class);
-                info("Astral Glow status:");
+                info("Glow status:");
                 info("  Sharing enabled: " + module.isPresenceSharingEnabled());
                 info("  Share URL: " + formatValue(module.getShareUrl()));
                 info("  Public list URL: " + formatValue(module.getRemoteUrl()));
@@ -89,7 +89,7 @@ public class GlowCommand extends Command {
             .executes(ctx -> {
                 ForgGlow module = Modules.get().get(ForgGlow.class);
                 module.refreshSharedRegistryNow();
-                info("Triggered Astral Glow public list refresh and presence share.");
+                info("Requested a list refresh and share attempt.");
                 return SINGLE_SUCCESS;
             })
         );

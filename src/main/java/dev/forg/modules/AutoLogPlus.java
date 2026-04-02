@@ -436,7 +436,7 @@ public class AutoLogPlus extends Module {
     private boolean waitingForReconnection;
 
     public AutoLogPlus() {
-        super(forg.AUTOMATION, "auto-log-plus", "Customizable logout triggers for 2b2t travel, PvP, and AFK automation.");
+        super(forg.UTILITY, "auto-log-plus", "Customizable logout triggers for 2b2t travel, PvP, and AFK automation.");
     }
 
     @Override

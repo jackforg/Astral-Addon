@@ -1,6 +1,6 @@
 # Astral Glow Registry
 
-This is a small reference service for AstralGlow's opt-in presence sharing.
+Small reference service for AstralGlow's opt-in presence sharing.
 
 It does three things:
 - accepts `POST /share` requests containing only `uuid` and `username`
@@ -14,7 +14,7 @@ Astral's `share-presence` client setting is intentionally opt-in and transparent
 - turn them into a public JSON list
 - optionally keep a GitHub-hosted public copy in sync for easy inspection
 
-This service is that missing piece.
+This is the missing piece between Astral clients sharing presence and other clients reading a public glow list.
 
 ## Data stored
 
@@ -25,7 +25,7 @@ The public registry contains:
 - `optedInAt`
 - `lastSeenAt`
 
-The service does not intentionally store chat, coordinates, inventory, server IPs, tokens, or account credentials.
+The service does not store chat, coordinates, inventory, server IPs, tokens, or account credentials.
 
 ## Run locally
 
@@ -78,4 +78,4 @@ If you want opt-in users to automatically appear in the repo-hosted public list:
 
 ## Trust model
 
-This registry is cosmetic and unauthenticated. It should be treated as an opt-in, user-submitted list, not a proof-of-identity system.
+This registry is cosmetic and unauthenticated. Treat it as an opt-in user list, not proof of identity.

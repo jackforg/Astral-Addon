@@ -77,7 +77,7 @@ public class AutoEXPPlus extends Module {
     private int repairingI;
 
     public AutoEXPPlus() {
-        super(forg.COMBAT, "auto-exp-plus", "Automatically repairs your armor and tools in pvp.");
+        super(forg.UTILITY, "auto-exp-plus", "Automatically repairs your armor and tools in pvp.");
     }
 
     @Override

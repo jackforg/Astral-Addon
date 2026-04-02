@@ -132,7 +132,7 @@ public class AutoFarm extends Module {
     int actions = 0;
 
     public AutoFarm() {
-        super(forg.MINING, "auto-farm", "All-in-one farm utility.");
+        super(forg.WORLD, "auto-farm", "All-in-one farm utility.");
     }
 
     @Override
