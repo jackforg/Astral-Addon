@@ -14,13 +14,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class KeyBindingMixin {
 
     @Unique
-    ElytraFlyPlusPlus efly = null;
+    private ElytraFlyPlusPlus efly = null;
+
+    @Unique
+    private ElytraFlyPlusPlus astral$getEfly() {
+        if (efly != null) return efly;
+
+        Modules modules = Modules.get();
+        if (modules == null) return null;
+
+        efly = modules.get(ElytraFlyPlusPlus.class);
+        return efly;
+    }
 
     @Inject(at = @At("RETURN"), method = "isPressed", cancellable = true)
     public void isPressed(CallbackInfoReturnable<Boolean> cir)
     {
-        // setting it beforehand caused a crash because meteor wasnt loaded yet
-        efly = efly == null ? Modules.get().get(ElytraFlyPlusPlus.class) : efly;
+        ElytraFlyPlusPlus efly = astral$getEfly();
         KeyBinding self = (KeyBinding) (Object) this;
         if (efly != null && efly.isActive() && efly.enabled() && self == MinecraftClient.getInstance().options.forwardKey)
         {

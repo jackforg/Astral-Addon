@@ -29,11 +29,23 @@ public abstract class LivingEntityMixin extends Entity
     public abstract Brain<?> getBrain();
 
     @Unique
-    ElytraFlyPlusPlus efly = Modules.get().get(ElytraFlyPlusPlus.class);
+    private ElytraFlyPlusPlus efly;
+
+    @Unique
+    private ElytraFlyPlusPlus astral$getEfly() {
+        if (efly != null) return efly;
+
+        Modules modules = Modules.get();
+        if (modules == null) return null;
+
+        efly = modules.get(ElytraFlyPlusPlus.class);
+        return efly;
+    }
 
     @Inject(at = @At("HEAD"), method = "tickMovement()V")
     private void tickMovement(CallbackInfo ci)
     {
+        ElytraFlyPlusPlus efly = astral$getEfly();
         if (mc.player != null && mc.player.getBrain().equals(this.getBrain()) && efly != null && efly.enabled())
         {
             this.jumpingCooldown = 0;
@@ -43,6 +55,7 @@ public abstract class LivingEntityMixin extends Entity
     @Inject(at = @At("HEAD"), method = "isGliding", cancellable = true)
     private void isGliding(CallbackInfoReturnable<Boolean> cir)
     {
+        ElytraFlyPlusPlus efly = astral$getEfly();
         if (mc.player != null && mc.player.getBrain().equals(this.getBrain()) && efly != null && efly.enabled())
         {
             cir.setReturnValue(true);

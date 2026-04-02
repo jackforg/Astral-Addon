@@ -23,11 +23,23 @@ public class EntityMixin
     protected UUID uuid;
 
     @Unique
-    ElytraFlyPlusPlus efly = Modules.get().get(ElytraFlyPlusPlus.class);
+    private ElytraFlyPlusPlus efly;
+
+    @Unique
+    private ElytraFlyPlusPlus astral$getEfly() {
+        if (efly != null) return efly;
+
+        Modules modules = Modules.get();
+        if (modules == null) return null;
+
+        efly = modules.get(ElytraFlyPlusPlus.class);
+        return efly;
+    }
 
     @Inject(at = @At("HEAD"), method = "getPose()Lnet/minecraft/entity/EntityPose;", cancellable = true)
     private void getPose(CallbackInfoReturnable<EntityPose> cir)
     {
+        ElytraFlyPlusPlus efly = astral$getEfly();
         if (efly != null && efly.enabled() && this.uuid == mc.player.getUuid())
         {
             cir.setReturnValue(EntityPose.STANDING);
@@ -37,6 +49,7 @@ public class EntityMixin
     @Inject(at = @At("HEAD"), method = "isSprinting()Z", cancellable = true)
     private void isSprinting(CallbackInfoReturnable<Boolean> cir)
     {
+        ElytraFlyPlusPlus efly = astral$getEfly();
         if (efly != null && efly.enabled() && this.uuid == mc.player.getUuid())
         {
             cir.setReturnValue(true);
@@ -46,6 +59,7 @@ public class EntityMixin
     @Inject(at = @At("HEAD"), method = "pushAwayFrom", cancellable = true)
     private void pushAwayFrom(Entity entity, CallbackInfo ci)
     {
+        ElytraFlyPlusPlus efly = astral$getEfly();
         if (mc.player != null && this.uuid == mc.player.getUuid() && efly != null && efly.enabled() && !entity.getUuid().equals(this.uuid))
         {
             ci.cancel();

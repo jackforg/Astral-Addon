@@ -12,11 +12,16 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 @Mixin(Entity.class)
 public class ForgGlowMixin {
+    private ForgGlow astral$getModule() {
+        var modules = Modules.get();
+        if (modules == null) return null;
+        return modules.get(ForgGlow.class);
+    }
 
     @Inject(method = "isGlowing", at = @At("HEAD"), cancellable = true)
     private void isGlowing(CallbackInfoReturnable<Boolean> cir) {
         if (mc.player == null) return;
-        ForgGlow module = Modules.get().get(ForgGlow.class);
+        ForgGlow module = astral$getModule();
         if (module == null || !module.isActive()) return;
         Entity entity = (Entity) (Object) this;
         if ((module.selfGlow.get() && entity == mc.player) || module.shouldGlow(entity.getUuid())) {
@@ -27,7 +32,7 @@ public class ForgGlowMixin {
     @Inject(method = "getTeamColorValue", at = @At("HEAD"), cancellable = true)
     private void getTeamColorValue(CallbackInfoReturnable<Integer> cir) {
         if (mc.player == null) return;
-        ForgGlow module = Modules.get().get(ForgGlow.class);
+        ForgGlow module = astral$getModule();
         if (module == null || !module.isActive()) return;
         Entity entity = (Entity) (Object) this;
         if ((module.selfGlow.get() && entity == mc.player) || module.shouldGlow(entity.getUuid())) {
