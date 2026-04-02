@@ -6,6 +6,7 @@ import dev.forg.utils.seed.SeedResolver;
 import dev.forg.utils.seed.SeedWorldContext;
 import meteordevelopment.meteorclient.gui.GuiTheme;
 import meteordevelopment.meteorclient.gui.WindowScreen;
+import meteordevelopment.meteorclient.gui.widgets.input.WTextBox;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.events.render.Render2DEvent;
@@ -37,6 +38,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -52,6 +54,13 @@ public class SeedMinimap extends Module {
         .name("shared-seed")
         .description("Shared world seed used by Astral seed modules on multiplayer. Slime Chunks and Loot Locator fall back to this when their own seed setting is blank.")
         .defaultValue("7557068879127401510")
+        .build()
+    );
+
+    private final Setting<MapDimension> mapDimension = sgGeneral.add(new EnumSetting.Builder<MapDimension>()
+        .name("dimension")
+        .description("Which dimension Seed Minimap should render. Current follows the dimension you are standing in.")
+        .defaultValue(MapDimension.CURRENT)
         .build()
     );
 
@@ -98,7 +107,7 @@ public class SeedMinimap extends Module {
 
     private final Setting<ChunkbaseAction> chunkbase = sgGeneral.add(new GenericSetting.Builder<ChunkbaseAction>()
         .name("chunkbase")
-        .description("Open or copy a live Chunkbase seed-map link using the shared seed, current dimension, and your position.")
+        .description("Open or copy a live Chunkbase seed-map link using the shared seed, selected dimension, and your position.")
         .defaultValue(new ChunkbaseAction())
         .build()
     );
@@ -110,10 +119,10 @@ public class SeedMinimap extends Module {
         .build()
     );
 
-    private final Setting<String> biomeTargets = sgBiomes.add(new StringSetting.Builder()
+    private final Setting<BiomeTargetSelection> biomeTargets = sgBiomes.add(new GenericSetting.Builder<BiomeTargetSelection>()
         .name("biome-targets")
-        .description("Comma-separated biome ids to highlight, for example minecraft:mushroom_fields,minecraft:badlands.")
-        .defaultValue("")
+        .description("Select which biome ids should be highlighted on the minimap.")
+        .defaultValue(new BiomeTargetSelection())
         .build()
     );
 
@@ -284,6 +293,9 @@ public class SeedMinimap extends Module {
             text.render("Seed Minimap", bounds.x, bounds.y - text.getHeight() - 2, new Color(255, 255, 255));
 
             double footerY = bounds.y + bounds.size + 2;
+            text.render("Dimension: " + resolveDimensionLabel(), bounds.x, footerY, new Color(210, 210, 235));
+            footerY += text.getHeight() + 1;
+
             if (showBiomes.get() && !currentBiomeId.isEmpty()) {
                 text.render("Biome: " + prettifyBiomeId(currentBiomeId), bounds.x, footerY, new Color(170, 220, 255));
                 footerY += text.getHeight() + 1;
@@ -471,7 +483,7 @@ public class SeedMinimap extends Module {
 
     private List<RegistryKey<Biome>> parseBiomeTargets() {
         Set<RegistryKey<Biome>> targets = new LinkedHashSet<>();
-        for (String token : biomeTargets.get().split(",")) {
+        for (String token : biomeTargets.get().selectedBiomeIds()) {
             String trimmed = token.trim();
             if (trimmed.isEmpty()) continue;
 
@@ -504,7 +516,20 @@ public class SeedMinimap extends Module {
     }
 
     private Dimension resolveDimension() {
-        return PlayerUtils.getDimension();
+        return switch (mapDimension.get()) {
+            case CURRENT -> PlayerUtils.getDimension();
+            case OVERWORLD -> Dimension.Overworld;
+            case NETHER -> Dimension.Nether;
+            case END -> Dimension.End;
+        };
+    }
+
+    private String resolveDimensionLabel() {
+        return switch (resolveDimension()) {
+            case Nether -> "Nether";
+            case End -> "End";
+            default -> "Overworld";
+        };
     }
 
     private String buildBiomeSignature(long resolvedSeed, String worldKey, List<RegistryKey<Biome>> targets) {
@@ -513,7 +538,7 @@ public class SeedMinimap extends Module {
             .sorted()
             .collect(Collectors.joining(","));
 
-        return resolvedSeed + "|" + worldKey + "|" + blockRadius.get() + "|" + biomeSampleStep.get() + "|" + ids;
+        return resolvedSeed + "|" + worldKey + "|" + resolveDimension() + "|" + blockRadius.get() + "|" + biomeSampleStep.get() + "|" + ids;
     }
 
     private double distanceSqXZ(BlockPos a, BlockPos b) {
@@ -635,6 +660,143 @@ public class SeedMinimap extends Module {
         }
     }
 
+    private final class BiomeTargetSelection implements meteordevelopment.meteorclient.settings.IGeneric<BiomeTargetSelection> {
+        private final List<String> selectedBiomeIds = new ArrayList<>();
+
+        public List<String> selectedBiomeIds() {
+            return List.copyOf(selectedBiomeIds);
+        }
+
+        @Override
+        public BiomeTargetSelection set(BiomeTargetSelection value) {
+            selectedBiomeIds.clear();
+            selectedBiomeIds.addAll(value.selectedBiomeIds);
+            return this;
+        }
+
+        @Override
+        public BiomeTargetSelection copy() {
+            BiomeTargetSelection copy = new BiomeTargetSelection();
+            copy.selectedBiomeIds.addAll(selectedBiomeIds);
+            return copy;
+        }
+
+        @Override
+        public NbtCompound toTag() {
+            NbtCompound tag = new NbtCompound();
+            tag.putString("biomes", String.join(",", selectedBiomeIds));
+            return tag;
+        }
+
+        @Override
+        public BiomeTargetSelection fromTag(NbtCompound tag) {
+            selectedBiomeIds.clear();
+            String stored = tag.getString("biomes", "");
+            if (!stored.isEmpty()) {
+                for (String token : stored.split(",")) {
+                    String trimmed = token.trim();
+                    if (!trimmed.isEmpty() && !selectedBiomeIds.contains(trimmed)) {
+                        selectedBiomeIds.add(trimmed);
+                    }
+                }
+            }
+
+            return this;
+        }
+
+        @Override
+        public WindowScreen createScreen(GuiTheme theme, GenericSetting<BiomeTargetSelection> setting) {
+            return new BiomeTargetScreen(theme, setting, this);
+        }
+    }
+
+    private final class BiomeTargetScreen extends WindowScreen {
+        private final GenericSetting<BiomeTargetSelection> setting;
+        private final BiomeTargetSelection workingCopy;
+        private String filter = "";
+
+        private BiomeTargetScreen(GuiTheme theme, GenericSetting<BiomeTargetSelection> setting, BiomeTargetSelection selection) {
+            super(theme, "Biome Targets");
+            this.setting = setting;
+            this.workingCopy = selection.copy();
+        }
+
+        @Override
+        public void initWidgets() {
+            add(theme.label("Select which biomes Seed Minimap should highlight.", 420)).expandX();
+            add(theme.label("Selected: " + workingCopy.selectedBiomeIds().size())).expandX();
+
+            var filterRow = add(theme.horizontalList()).expandX().widget();
+            filterRow.add(theme.label("Filter:"));
+            WTextBox filterBox = filterRow.add(theme.textBox(filter, "Search biome ids")).expandX().widget();
+            filterBox.action = () -> {
+                filter = filterBox.get().trim().toLowerCase(Locale.ROOT);
+                reload();
+            };
+
+            add(theme.label("Tip: use the search box or scroll the full biome list.", 420)).expandX();
+
+            List<String> biomeIds = availableBiomeIds();
+            for (String biomeId : biomeIds) {
+                if (!filter.isEmpty() && !biomeId.toLowerCase(Locale.ROOT).contains(filter)) continue;
+
+                var row = add(theme.horizontalList()).expandX().widget();
+                row.add(theme.label(prettifyBiomeId(biomeId) + " (" + biomeId + ")", 380)).expandX();
+
+                var checkbox = row.add(theme.checkbox(workingCopy.selectedBiomeIds.contains(biomeId))).widget();
+                checkbox.action = () -> {
+                    if (checkbox.checked) {
+                        if (!workingCopy.selectedBiomeIds.contains(biomeId)) workingCopy.selectedBiomeIds.add(biomeId);
+                    } else {
+                        workingCopy.selectedBiomeIds.remove(biomeId);
+                    }
+
+                    workingCopy.selectedBiomeIds.sort(String::compareTo);
+                    setting.set(workingCopy.copy());
+                    setting.onChanged();
+                };
+            }
+
+            var buttons = add(theme.horizontalList()).expandX().widget();
+
+            WButton clear = buttons.add(theme.button("Clear")).expandX().widget();
+            clear.action = () -> {
+                workingCopy.selectedBiomeIds.clear();
+                setting.set(workingCopy.copy());
+                setting.onChanged();
+                reload();
+            };
+
+            WButton current = buttons.add(theme.button("Add Current")).expandX().widget();
+            current.action = () -> {
+                if (!currentBiomeId.isEmpty() && !workingCopy.selectedBiomeIds.contains(currentBiomeId)) {
+                    workingCopy.selectedBiomeIds.add(currentBiomeId);
+                    workingCopy.selectedBiomeIds.sort(String::compareTo);
+                    setting.set(workingCopy.copy());
+                    setting.onChanged();
+                }
+                reload();
+            };
+
+            WButton close = buttons.add(theme.button("Close")).expandX().widget();
+            close.action = this::close;
+        }
+
+        private List<String> availableBiomeIds() {
+            Set<String> biomeIds = new LinkedHashSet<>(workingCopy.selectedBiomeIds);
+            if (mc.world != null) {
+                mc.world.getRegistryManager().getOrThrow(RegistryKeys.BIOME).streamEntries()
+                    .map(entry -> entry.getKey().map(key -> key.getValue().toString()).orElse(""))
+                    .filter(id -> !id.isEmpty())
+                    .forEach(biomeIds::add);
+            }
+
+            return biomeIds.stream()
+                .sorted(Comparator.naturalOrder())
+                .toList();
+        }
+    }
+
     private final class ChunkbaseScreen extends WindowScreen {
         private ChunkbaseScreen(GuiTheme theme) {
             super(theme, "Chunkbase");
@@ -645,6 +807,7 @@ public class SeedMinimap extends Module {
             String url = buildChunkbaseUrl();
 
             add(theme.label("Open the full Chunkbase seed map in your browser using Astral's shared seed and your current position.", 420)).expandX();
+            add(theme.label("Selected dimension: " + resolveDimensionLabel())).expandX();
             add(theme.label("Version preset: Java 1.21.9 - 1.21.11")).expandX();
             add(theme.label("URL:", true)).expandX();
             add(theme.label(url, 420)).expandX();
@@ -670,5 +833,12 @@ public class SeedMinimap extends Module {
         TOP_RIGHT,
         BOTTOM_LEFT,
         BOTTOM_RIGHT
+    }
+
+    private enum MapDimension {
+        CURRENT,
+        OVERWORLD,
+        NETHER,
+        END
     }
 }

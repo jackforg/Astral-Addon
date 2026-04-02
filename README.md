@@ -90,7 +90,7 @@ The following mods are supported but are not required:
 
 ## Installation
 1. Install Meteor Client for 1.21.11.
-2. Drop `astral-3.2.0.jar` into your `.minecraft/mods` folder.
+2. Drop `astral-3.2.2.jar` into your `.minecraft/mods` folder.
 3. Launch the game. Modules appear under the Astral category set listed above.
 
 ## Notes
@@ -103,7 +103,7 @@ The following mods are supported but are not required:
 - The companion service can serve `/glow_list.json` directly or mirror updates back into this repo.
 - `SeedMinimap` now includes a `shared-seed` field. `SlimeChunks` and `LootLocator` fall back to it automatically when their own `seed` setting is left blank.
 - Astral's public survival seed `7557068879127401510` is prefilled by default in the shared seed fields.
-- `SeedMinimap` now renders a lightweight biome color map, supports a comma-separated `biome-targets` list such as `minecraft:mushroom_fields,minecraft:badlands`, and can open Chunkbase with the current seed, dimension, and coordinates prefilled.
+- `SeedMinimap` now renders a lightweight biome color map, lets you select target biomes from an in-client picker, lets you choose `Current`, `Overworld`, `Nether`, or `End` for the map layer, and can open Chunkbase with the current seed, selected dimension, and coordinates prefilled.
 - `OreSim` now follows the same shared-seed fallback behavior as the other Astral seed modules.
 - `LootLocator` is structure-based. It finds structures that can roll the target item, not guaranteed chest contents, so it deliberately skips unsupported sources like simple dungeons.
 - `SlimeChunks` is overworld-only, while `LootLocator` searches the current dimension you are standing in.
@@ -118,7 +118,7 @@ The following mods are supported but are not required:
 ## Building From Source
 ```bash
 ./gradlew build
-# output: build/libs/astral-3.2.0.jar
+# output: build/libs/astral-3.2.2.jar
 ```
 
 ## Credits
