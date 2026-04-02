@@ -18,26 +18,27 @@ public class forg extends MeteorAddon {
     public static final String VERSION = "2.1.2";
 
     public static final Logger LOG = LogUtils.getLogger();
-    public static final Category COMBAT = new Category("Astral Combat", Items.NETHERITE_SWORD.getDefaultStack());
-    public static final Category MOVEMENT = new Category("Astral Movement", Items.ELYTRA.getDefaultStack());
-    public static final Category MINING = new Category("Astral Mining", Items.NETHERITE_PICKAXE.getDefaultStack());
-    public static final Category AUTOMATION = new Category("Astral Automation", Items.OBSERVER.getDefaultStack());
-    public static final Category STASH = new Category("Astral Stash", Items.ENDER_CHEST.getDefaultStack());
-    public static final Category UTILITY = new Category("Astral Utility", Items.NETHER_STAR.getDefaultStack());
+    private static final Category COMBAT_CATEGORY = new Category("Astral Combat", Items.NETHERITE_SWORD.getDefaultStack());
+    private static final Category WORLD_CATEGORY = new Category("Astral World", Items.ENDER_CHEST.getDefaultStack());
+    private static final Category UTILITY_CATEGORY = new Category("Astral Utility", Items.NETHER_STAR.getDefaultStack());
+
+    public static final Category COMBAT = COMBAT_CATEGORY;
+    public static final Category MOVEMENT = WORLD_CATEGORY;
+    public static final Category MINING = WORLD_CATEGORY;
+    public static final Category AUTOMATION = UTILITY_CATEGORY;
+    public static final Category STASH = WORLD_CATEGORY;
+    public static final Category UTILITY = UTILITY_CATEGORY;
 
     @Override
     public void onRegisterCategories() {
-        Modules.registerCategory(COMBAT);
-        Modules.registerCategory(MOVEMENT);
-        Modules.registerCategory(MINING);
-        Modules.registerCategory(AUTOMATION);
-        Modules.registerCategory(STASH);
-        Modules.registerCategory(UTILITY);
+        Modules.registerCategory(COMBAT_CATEGORY);
+        Modules.registerCategory(WORLD_CATEGORY);
+        Modules.registerCategory(UTILITY_CATEGORY);
     }
 
     @Override
     public void onInitialize() {
-        LOG.info("Initializing Astral {} for Minecraft 1.21.11", VERSION);
+        LOG.info("Initializing Astral Addon {} by Forg for Minecraft 1.21.11", VERSION);
 
         // Original Astral modules.
         Modules.get().add(new ForgGlow());
@@ -95,7 +96,7 @@ public class forg extends MeteorAddon {
         Commands.add(new ForgVersionCommand());
         Commands.add(new GlowCommand());
 
-        LOG.info("Astral {} initialized - {} modules loaded.", VERSION, Modules.get().getAll().size());
+        LOG.info("Astral Addon {} initialized - {} modules loaded.", VERSION, Modules.get().getAll().size());
     }
 
     @Override
@@ -105,6 +106,6 @@ public class forg extends MeteorAddon {
 
     @Override
     public GithubRepo getRepo() {
-        return new GithubRepo("jackforg", "forgs-decluttered-addon");
+        return new GithubRepo("jackforg", "Astral-Addon");
     }
 }

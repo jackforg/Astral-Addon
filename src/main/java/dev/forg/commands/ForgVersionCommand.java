@@ -9,7 +9,7 @@ import net.minecraft.command.CommandSource;
 
 public class ForgVersionCommand extends Command {
     public ForgVersionCommand() {
-        super("astralversion", "Prints Astral addon version info.", "forgversion");
+        super("astralversion", "Prints Astral Addon by Forg version info.", "forgversion");
     }
 
     @Override
@@ -18,7 +18,7 @@ public class ForgVersionCommand extends Command {
     }
 
     private int run(CommandContext<CommandSource> ctx) {
-        ChatUtils.info("Astral", "Astral version: " + forg.VERSION);
+        ChatUtils.info("Astral Addon", "Astral Addon by Forg version: " + forg.VERSION);
         return 1;
     }
 }

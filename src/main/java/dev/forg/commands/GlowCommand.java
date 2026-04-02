@@ -78,7 +78,18 @@ public class GlowCommand extends Command {
                 info("  Share URL: " + formatValue(module.getShareUrl()));
                 info("  Public list URL: " + formatValue(module.getRemoteUrl()));
                 info("  Remote shared users loaded: " + module.getRemoteListSize());
+                info("  Last public list fetch: " + module.getLastFetchStatus());
+                info("  Last presence share: " + module.getLastShareStatus());
                 info("  " + module.getSharedFieldSummary());
+                return SINGLE_SUCCESS;
+            })
+        );
+
+        builder.then(literal("refresh")
+            .executes(ctx -> {
+                ForgGlow module = Modules.get().get(ForgGlow.class);
+                module.refreshSharedRegistryNow();
+                info("Triggered Astral Glow public list refresh and presence share.");
                 return SINGLE_SUCCESS;
             })
         );

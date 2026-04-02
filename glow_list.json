@@ -1,5 +1,27 @@
-[
-  "be8e82dc-95e5-40f8-9c5e-58a9a5058ce7",
-  "1a9e04eb-8e82-4957-a405-588a3e80cda1",
-  "387dcebd-59b7-423a-9852-dce6c8884af7"
-]
+{
+  "notice": "Public AstralGlow registry. Entries are opt-in, user-submitted, and used only for client-side glow cosmetics.",
+  "users": [
+    {
+      "uuid": "be8e82dc-95e5-40f8-9c5e-58a9a5058ce7",
+      "username": null,
+      "source": "manual",
+      "optedInAt": null,
+      "lastSeenAt": null
+    },
+    {
+      "uuid": "1a9e04eb-8e82-4957-a405-588a3e80cda1",
+      "username": null,
+      "source": "manual",
+      "optedInAt": null,
+      "lastSeenAt": null
+    },
+    {
+      "uuid": "387dcebd-59b7-423a-9852-dce6c8884af7",
+      "username": null,
+      "source": "manual",
+      "optedInAt": null,
+      "lastSeenAt": null
+    }
+  ],
+  "updatedAt": "2026-04-02T00:00:00Z"
+}

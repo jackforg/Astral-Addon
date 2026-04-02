@@ -1,17 +1,14 @@
-# Astral
+# Astral Addon
 
-A [Meteor Client](https://meteorclient.com) addon for Minecraft 1.21.11, consolidating useful modules from several open-source addons into one tidy package under a single **Astral** category.
+A [Meteor Client](https://meteorclient.com) addon for Minecraft 1.21.11 by Forg, consolidating useful modules from several open-source addons into one tidy Astral package.
 
-Maintained as the **Astral** fork of the original addon.
+Maintained as the **Astral Addon** fork of the original addon.
 
 ## Categories
 
-Astral now splits modules across multiple Meteor lists instead of one giant category:
+Astral Addon now groups modules into three Meteor lists:
 - `Astral Combat`
-- `Astral Movement`
-- `Astral Mining`
-- `Astral Automation`
-- `Astral Stash`
+- `Astral World`
 - `Astral Utility`
 
 ## Modules
@@ -94,7 +91,16 @@ The following mods are supported but are not required:
 - `SpeedMine`, `Surround`, and `AutoCrystal` already exist in Meteor, so Astral does not ship duplicate copies of them.
 - `AstralGlow` presence sharing is disabled by default. If enabled, it only sends your UUID and current username to the configured share endpoint.
 - The repo-root `glow_list.json` is intended to be the public read-only registry file for `AstralGlow`'s default `list-url`.
+- If you want opt-in users to automatically appear in the public registry, deploy the companion service in `tools/glow-registry/` and point `share-url` at its `/share` endpoint.
+- The companion registry can either serve `/glow_list.json` directly or mirror updates back into this GitHub repo so users can inspect the public list for themselves.
 - `OreSim` uses a direct seed setting for multiplayer servers. On singleplayer, it uses the real world seed automatically.
+
+## AstralGlow Registry
+- `list-url` is the public JSON file Astral reads to decide who should glow.
+- `share-url` is an opt-in POST endpoint that accepts only `uuid` and `username`.
+- Astral now includes a reference service under `tools/glow-registry/` that accepts `/share` requests, serves `/glow_list.json`, and can optionally mirror that public list back to GitHub.
+- The public registry format is transparent and human-readable. It includes usernames, UUIDs, and timestamps so users can audit exactly what is stored.
+- `.glow status` shows the last fetch/share result, and `.glow refresh` forces an immediate refresh/share attempt for testing.
 
 ## Building From Source
 ```bash

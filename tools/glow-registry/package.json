@@ -1,0 +1,14 @@
+{
+  "name": "astral-glow-registry",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Reference registry service for AstralGlow opt-in presence sharing.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "check": "node --check server.mjs"
+  }
+}
