@@ -1,5 +1,7 @@
 package dev.forg.utils.seed;
 
+import dev.forg.modules.SeedMinimap;
+import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.minecraft.client.MinecraftClient;
 
 public final class SeedResolver {
@@ -11,7 +13,14 @@ public final class SeedResolver {
             return mc.getServer().getOverworld().getSeed();
         }
 
-        String trimmed = seedText == null ? "" : seedText.trim();
+        String trimmed = normalize(seedText);
+        if (trimmed.isEmpty()) {
+            SeedMinimap seedMinimap = Modules.get().get(SeedMinimap.class);
+            if (seedMinimap != null) {
+                trimmed = normalize(seedMinimap.getSharedSeed());
+            }
+        }
+
         if (trimmed.isEmpty()) return null;
 
         try {
@@ -20,5 +29,9 @@ public final class SeedResolver {
         catch (NumberFormatException ignored) {
             return null;
         }
+    }
+
+    private static String normalize(String value) {
+        return value == null ? "" : value.trim();
     }
 }

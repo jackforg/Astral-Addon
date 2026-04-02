@@ -34,8 +34,8 @@ public class SlimeChunks extends Module {
 
     private final Setting<String> seed = sgGeneral.add(new StringSetting.Builder()
         .name("seed")
-        .description("World seed used to predict slime chunks on multiplayer. Leave blank to use the true singleplayer seed.")
-        .defaultValue("")
+        .description("Optional per-module seed override. Leave blank to use Seed Minimap's shared seed, or the true singleplayer seed.")
+        .defaultValue("7557068879127401510")
         .build()
     );
 

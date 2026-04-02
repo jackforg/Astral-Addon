@@ -2,6 +2,7 @@ package dev.forg.modules;
 
 import dev.forg.forg;
 import dev.forg.utils.oresim.Ore;
+import dev.forg.utils.seed.SeedResolver;
 import meteordevelopment.meteorclient.events.render.Render3DEvent;
 import meteordevelopment.meteorclient.events.world.BlockUpdateEvent;
 import meteordevelopment.meteorclient.events.world.ChunkDataEvent;
@@ -52,8 +53,8 @@ public class OreSim extends Module {
 
     private final Setting<String> seed = sgGeneral.add(new StringSetting.Builder()
         .name("seed")
-        .description("World seed used for ore simulation on multiplayer. Leave blank to use the real singleplayer seed when available.")
-        .defaultValue("")
+        .description("Optional per-module seed override. Leave blank to use Seed Minimap's shared seed, or the true singleplayer seed.")
+        .defaultValue("7557068879127401510")
         .onChanged(value -> {
             if (isActive()) reload();
         })
@@ -179,18 +180,7 @@ public class OreSim extends Module {
     }
 
     private Long resolveSeed() {
-        if (mc.isInSingleplayer() && mc.getServer() != null) {
-            return mc.getServer().getOverworld().getSeed();
-        }
-
-        String value = seed.get().trim();
-        if (value.isEmpty()) return null;
-
-        try {
-            return Long.parseLong(value);
-        } catch (NumberFormatException e) {
-            return null;
-        }
+        return SeedResolver.resolve(mc, seed.get());
     }
 
     private void loadVisibleChunks() {

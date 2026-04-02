@@ -43,8 +43,8 @@ public class LootLocator extends Module {
 
     private final Setting<String> seed = sgGeneral.add(new StringSetting.Builder()
         .name("seed")
-        .description("World seed used for structure searches on multiplayer. Leave blank to use the real singleplayer seed.")
-        .defaultValue("")
+        .description("Optional per-module seed override. Leave blank to use Seed Minimap's shared seed, or the true singleplayer seed.")
+        .defaultValue("7557068879127401510")
         .build()
     );
 
@@ -272,15 +272,23 @@ public class LootLocator extends Module {
             return;
         }
 
-        SeedWorldContext context = SeedWorldContext.create(mc.world, dimension, resolvedSeed, mc.player.getBlockPos());
-        List<LootSearchResult> newResults = StructureLocator.locateLootTargets(
-            context,
-            specs,
-            mc.player.getBlockPos(),
-            searchDistance.get(),
-            resultsPerStructure.get(),
-            maxResults.get()
-        );
+        List<LootSearchResult> newResults;
+        try {
+            SeedWorldContext context = SeedWorldContext.create(mc.world, dimension, resolvedSeed, mc.player.getBlockPos());
+            newResults = StructureLocator.locateLootTargets(
+                context,
+                specs,
+                mc.player.getBlockPos(),
+                searchDistance.get(),
+                resultsPerStructure.get(),
+                maxResults.get()
+            );
+        } catch (RuntimeException exception) {
+            forg.LOG.warn("Loot Locator failed to build search context for {} in {}.", itemId, dimension, exception);
+            error("Loot search failed for this world. Loot Locator has been disabled.");
+            toggle();
+            return;
+        }
 
         worldSeed = resolvedSeed;
         lastTargetItem = itemId;

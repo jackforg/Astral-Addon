@@ -51,7 +51,7 @@ Astral Addon uses two Meteor lists:
 |---|---|
 | SlimeChunks | Predicts overworld slime chunks from a known seed, can keep a nearest waypoint, and can hand the nearest chunk to Baritone |
 | LootLocator | Finds seed-valid structures whose loot tables can roll a target item, with presets for enchanted gapples, elytra, netherite upgrades, heavy cores, and silence trims |
-| SeedMinimap | Draws a player-centered 2D seed overlay that can show nearby slime chunks and LootLocator targets |
+| SeedMinimap | Draws a player-centered 2D seed overlay with a lightweight biome map, stores the shared multiplayer seed used by Astral seed modules, can highlight selected target biomes, and can jump out to Chunkbase |
 
 ### ESP & Rendering
 | Module | Description |
@@ -90,7 +90,7 @@ The following mods are supported but are not required:
 
 ## Installation
 1. Install Meteor Client for 1.21.11.
-2. Drop `astral-3.0.0.jar` into your `.minecraft/mods` folder.
+2. Drop `astral-3.2.0.jar` into your `.minecraft/mods` folder.
 3. Launch the game. Modules appear under the Astral category set listed above.
 
 ## Notes
@@ -101,7 +101,10 @@ The following mods are supported but are not required:
 - If you want opt-in users to appear there automatically, deploy the companion service in `tools/glow-registry/` and point `share-url` at its `/share` endpoint.
 - A ready-to-use `render.yaml` is included for a free Render deployment of that service.
 - The companion service can serve `/glow_list.json` directly or mirror updates back into this repo.
-- `OreSim` uses a direct seed setting for multiplayer servers. On singleplayer, it uses the real world seed automatically.
+- `SeedMinimap` now includes a `shared-seed` field. `SlimeChunks` and `LootLocator` fall back to it automatically when their own `seed` setting is left blank.
+- Astral's public survival seed `7557068879127401510` is prefilled by default in the shared seed fields.
+- `SeedMinimap` now renders a lightweight biome color map, supports a comma-separated `biome-targets` list such as `minecraft:mushroom_fields,minecraft:badlands`, and can open Chunkbase with the current seed, dimension, and coordinates prefilled.
+- `OreSim` now follows the same shared-seed fallback behavior as the other Astral seed modules.
 - `LootLocator` is structure-based. It finds structures that can roll the target item, not guaranteed chest contents, so it deliberately skips unsupported sources like simple dungeons.
 - `SlimeChunks` is overworld-only, while `LootLocator` searches the current dimension you are standing in.
 
@@ -115,7 +118,7 @@ The following mods are supported but are not required:
 ## Building From Source
 ```bash
 ./gradlew build
-# output: build/libs/astral-3.0.0.jar
+# output: build/libs/astral-3.2.0.jar
 ```
 
 ## Credits

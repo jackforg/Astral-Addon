@@ -2,7 +2,7 @@ package dev.forg.utils.seed;
 
 import meteordevelopment.meteorclient.utils.world.Dimension;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
@@ -60,7 +60,15 @@ public final class SeedWorldContext {
     }
 
     public static SeedWorldContext create(ClientWorld world, Dimension dimension, long seed, BlockPos origin) {
-        RegistryWrapper.WrapperLookup registryLookup = BuiltinRegistries.createWrapperLookup();
+        return create(world, dimension, seed, origin, true);
+    }
+
+    public static SeedWorldContext createBiomeContext(ClientWorld world, Dimension dimension, long seed, BlockPos origin) {
+        return create(world, dimension, seed, origin, false);
+    }
+
+    private static SeedWorldContext create(ClientWorld world, Dimension dimension, long seed, BlockPos origin, boolean includeStructures) {
+        DynamicRegistryManager registryLookup = world.getRegistryManager();
         RegistryWrapper.Impl<StructureSet> structureSets = registryLookup.getOrThrow(RegistryKeys.STRUCTURE_SET);
         RegistryWrapper.Impl<WorldPreset> worldPresets = registryLookup.getOrThrow(RegistryKeys.WORLD_PRESET);
         var dimensions = worldPresets.getOrThrow(WorldPresets.DEFAULT).value().createDimensionsRegistryHolder().dimensions();
@@ -74,12 +82,14 @@ public final class SeedWorldContext {
         ChunkGenerator chunkGenerator = dimensionOptions.chunkGenerator();
         NoiseConfig noiseConfig = createNoiseConfig(registryLookup, chunkGenerator, seed);
         HeightLimitView heightLimitView = createHeightLimitView(world, chunkGenerator);
-        StructurePlacementCalculator placementCalculator = StructurePlacementCalculator.create(
-            noiseConfig,
-            seed,
-            chunkGenerator.getBiomeSource(),
-            structureSets
-        );
+        StructurePlacementCalculator placementCalculator = includeStructures
+            ? StructurePlacementCalculator.create(
+                noiseConfig,
+                seed,
+                chunkGenerator.getBiomeSource(),
+                structureSets
+            )
+            : null;
 
         return new SeedWorldContext(
             seed,
@@ -149,6 +159,10 @@ public final class SeedWorldContext {
     }
 
     public StructurePlacementCalculator placementCalculator() {
+        if (placementCalculator == null) {
+            throw new IllegalStateException("Structure placement data is not available for this seed context.");
+        }
+
         return placementCalculator;
     }
 
