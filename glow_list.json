@@ -2,13 +2,6 @@
   "notice": "AstralGlow public list. Entries are opt-in and used only for client-side glow cosmetics.",
   "users": [
     {
-      "uuid": "be8e82dc-95e5-40f8-9c5e-58a9a5058ce7",
-      "username": null,
-      "source": "manual",
-      "optedInAt": null,
-      "lastSeenAt": null
-    },
-    {
       "uuid": "1a9e04eb-8e82-4957-a405-588a3e80cda1",
       "username": null,
       "source": "manual",
@@ -21,7 +14,21 @@
       "source": "manual",
       "optedInAt": null,
       "lastSeenAt": null
+    },
+    {
+      "uuid": "be8e82dc-95e5-40f8-9c5e-58a9a5058ce7",
+      "username": null,
+      "source": "manual",
+      "optedInAt": null,
+      "lastSeenAt": null
+    },
+    {
+      "uuid": "3fd2193b-52ab-4174-a47d-f720909daeba",
+      "username": "slimyforg",
+      "source": "share-presence",
+      "optedInAt": "2026-04-02T16:33:54.873Z",
+      "lastSeenAt": "2026-04-02T16:33:54.873Z"
     }
   ],
-  "updatedAt": "2026-04-02T00:00:00Z"
+  "updatedAt": "2026-04-02T16:33:54.873Z"
 }
