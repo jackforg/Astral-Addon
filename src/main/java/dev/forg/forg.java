@@ -2,6 +2,7 @@ package dev.forg;
 
 import com.mojang.logging.LogUtils;
 import dev.forg.commands.BannerBlacklist;
+import dev.forg.commands.ChunkbaseCommand;
 import dev.forg.commands.ForgVersionCommand;
 import dev.forg.commands.GlowCommand;
 import dev.forg.modules.*;
@@ -15,7 +16,7 @@ import net.minecraft.item.Items;
 import org.slf4j.Logger;
 
 public class forg extends MeteorAddon {
-    public static final String VERSION = "3.2.2";
+    public static final String VERSION = "3.2.3";
 
     public static final Logger LOG = LogUtils.getLogger();
     public static final Category WORLD = new Category("Astral World", Items.ENDER_CHEST.getDefaultStack());
@@ -82,11 +83,11 @@ public class forg extends MeteorAddon {
         Modules.get().add(new LootLocator());
         Modules.get().add(new OreSim());
         Modules.get().add(new Rendering());
-        Modules.get().add(new SeedMinimap());
         Modules.get().add(new SlimeChunks());
 
         // Commands.
         Commands.add(new BannerBlacklist());
+        Commands.add(new ChunkbaseCommand());
         Commands.add(new ForgVersionCommand());
         Commands.add(new GlowCommand());
 

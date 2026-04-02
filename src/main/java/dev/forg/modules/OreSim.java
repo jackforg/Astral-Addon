@@ -53,7 +53,7 @@ public class OreSim extends Module {
 
     private final Setting<String> seed = sgGeneral.add(new StringSetting.Builder()
         .name("seed")
-        .description("Optional per-module seed override. Leave blank to use Seed Minimap's shared seed, or the true singleplayer seed.")
+        .description("Optional per-module seed override. Leave blank to use Astral's default survival seed, or the true singleplayer seed.")
         .defaultValue("7557068879127401510")
         .onChanged(value -> {
             if (isActive()) reload();

@@ -1,10 +1,10 @@
 package dev.forg.utils.seed;
 
-import dev.forg.modules.SeedMinimap;
-import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.minecraft.client.MinecraftClient;
 
 public final class SeedResolver {
+    public static final String DEFAULT_MULTIPLAYER_SEED = "7557068879127401510";
+
     private SeedResolver() {
     }
 
@@ -15,10 +15,7 @@ public final class SeedResolver {
 
         String trimmed = normalize(seedText);
         if (trimmed.isEmpty()) {
-            SeedMinimap seedMinimap = Modules.get().get(SeedMinimap.class);
-            if (seedMinimap != null) {
-                trimmed = normalize(seedMinimap.getSharedSeed());
-            }
+            trimmed = DEFAULT_MULTIPLAYER_SEED;
         }
 
         if (trimmed.isEmpty()) return null;
