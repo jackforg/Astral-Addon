@@ -200,12 +200,14 @@ public class AutoFarm extends Module {
         if (!harvest.get()) return false;
         if (!harvestBlocks.get().contains(block)) return false;
         if (!isMature(state, block)) return false;
-        if (block instanceof SweetBerryBushBlock)
+        if (block instanceof SweetBerryBushBlock) {
             mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, new BlockHitResult(Utils.vec3d(pos), Direction.UP, pos, false));
-        else {
-            mc.interactionManager.updateBlockBreakingProgress(pos, Direction.UP);
+            return true;
         }
-        return true;
+
+        // Use Meteor's break helper here instead of the lower-level progress call.
+        // It is much more tolerant of multiplayer interaction edge cases.
+        return BlockUtils.breakBlock(pos, rotate.get());
     }
 
     private boolean plant(BlockPos pos, Block block) {
