@@ -19,6 +19,8 @@ Astral Addon uses two Meteor lists:
 | SearchArea | Defines a search area bounding box for stash hunting routes |
 | PortalPatternFinder | Scans cave air for the shapes of removed nether portals |
 | BannerFinder | Finds and highlights banners with tracers, alerts, and persistent seen-banner memory |
+| ChestIndex | Indexes opened containers client-side, remembers tracked-item storage, and renders matching containers in-world |
+| OldChunkNotifier | Flags likely old chunks based on flowing border fluids and can render them for follow-up scouting |
 
 ### Movement & Flight
 | Module | Description |
@@ -29,6 +31,7 @@ Astral Addon uses two Meteor lists:
 | AutoPortal | Automatically builds, lights, and can auto-enter nether portals |
 | AutoIceBoat | Boat automation for ice highways with steering-aware auto-track |
 | RocketSpeed | Automatically uses fireworks when speed drops below the configured threshold |
+| PearlChecker | Tracks nearby ender pearls, alerts on throws, and can report landing positions |
 
 ### Automation
 | Module | Description |
@@ -64,6 +67,8 @@ Astral Addon uses two Meteor lists:
 | Module | Description |
 |---|---|
 | CoordLogger | Logs teleports and global world events with journaling, dedupe, and dimension tagging |
+| AutoExtinguish | Puts you out by clearing nearby fire, places water at your feet with optional pickup, and can clear persistent Nether fire on netherrack or soul soil |
+| SoundLocator | Turns key sound packets like explosions, pearls, totems, anchors, and portals into location alerts |
 | TrailFollower | Follows a recorded movement trail and can persist trail state for resume-after-disconnect workflows |
 | TrailMaker | Records a movement trail for TrailFollower and can save, load, and reverse named routes |
 | BookTools | Utilities for reading and copying books |
@@ -76,6 +81,7 @@ Astral Addon uses two Meteor lists:
 | DropTest | Tracks entity drops over time and outputs statistics to `.minecraft/meteor-client/astral/` |
 | MinecartDetector | Detects problematic minecarts, highlights suspicious clusters, and logs them to `.minecraft/meteor-client/astral/` |
 | TabGuiScale | Changes GUI scale when opening the tab/player list |
+| WhisperLogger | Logs incoming and outgoing whispers to a local Astral csv file |
 
 ## Requirements
 - Minecraft **1.21.11** (Fabric)
@@ -89,7 +95,7 @@ The following mods are supported but are not required:
 
 ## Installation
 1. Install Meteor Client for 1.21.11.
-2. Drop `astral-3.2.6.jar` into your `.minecraft/mods` folder.
+2. Drop `astral-3.5.0.jar` into your `.minecraft/mods` folder.
 3. Launch the game. Modules appear under the Astral category set listed above.
 
 ## Notes
@@ -119,7 +125,7 @@ The following mods are supported but are not required:
 ## Building From Source
 ```bash
 ./gradlew build
-# output: build/libs/astral-3.2.6.jar
+# output: build/libs/astral-3.5.0.jar
 ```
 
 ## Credits

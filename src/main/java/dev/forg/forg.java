@@ -16,7 +16,7 @@ import net.minecraft.item.Items;
 import org.slf4j.Logger;
 
 public class forg extends MeteorAddon {
-    public static final String VERSION = "3.2.6";
+    public static final String VERSION = "3.5.0";
 
     public static final Logger LOG = LogUtils.getLogger();
     public static final Category WORLD = new Category("Astral World", Items.ENDER_CHEST.getDefaultStack());
@@ -34,6 +34,12 @@ public class forg extends MeteorAddon {
 
         // Original Astral modules.
         Modules.get().add(new ForgGlow());
+        Modules.get().add(new AutoExtinguish());
+        Modules.get().add(new ChestIndex());
+        Modules.get().add(new PearlChecker());
+        Modules.get().add(new SoundLocator());
+        Modules.get().add(new OldChunkNotifier());
+        Modules.get().add(new WhisperLogger());
         Modules.get().add(new automoss());
         Modules.get().add(new B36());
         Modules.get().add(new BannerFinder());
