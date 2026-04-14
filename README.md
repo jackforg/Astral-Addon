@@ -95,7 +95,7 @@ The following mods are supported but are not required:
 
 ## Installation
 1. Install Meteor Client for 1.21.11.
-2. Drop `astral-3.5.0.jar` into your `.minecraft/mods` folder.
+2. Drop `astral-3.5.1.jar` into your `.minecraft/mods` folder.
 3. Launch the game. Modules appear under the Astral category set listed above.
 
 ## Notes
@@ -125,7 +125,7 @@ The following mods are supported but are not required:
 ## Building From Source
 ```bash
 ./gradlew build
-# output: build/libs/astral-3.5.0.jar
+# output: build/libs/astral-3.5.1.jar
 ```
 
 ## Credits
