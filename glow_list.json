@@ -23,6 +23,13 @@
       "lastSeenAt": "2026-04-18T14:05:51.153Z"
     },
     {
+      "uuid": "af353d7d-ec83-4253-9b56-324cc342d7bf",
+      "username": "OldForg",
+      "source": "share-presence",
+      "optedInAt": "2026-04-23T20:46:34.290Z",
+      "lastSeenAt": "2026-04-23T20:46:34.290Z"
+    },
+    {
       "uuid": "3fd2193b-52ab-4174-a47d-f720909daeba",
       "username": "slimyforg",
       "source": "share-presence",
@@ -30,5 +37,5 @@
       "lastSeenAt": "2026-04-23T20:28:51.050Z"
     }
   ],
-  "updatedAt": "2026-04-23T20:28:51.050Z"
+  "updatedAt": "2026-04-23T20:46:34.291Z"
 }
